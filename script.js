@@ -21,8 +21,20 @@ let allJobs = [];
 // DOM Elements
 const authActions = document.getElementById("authActions");
 const userMenu = document.getElementById("userMenu");
+const profileMenuBtn = document.getElementById("profileMenuBtn");
+const profileDropdown = document.getElementById("profileDropdown");
+
 const userDisplayName = document.getElementById("userDisplayName");
+const menuFullName = document.getElementById("menuFullName");
+const menuEmail = document.getElementById("menuEmail");
 const userRoleBadge = document.getElementById("userRoleBadge");
+
+const menuEmployerItem = document.getElementById("menuEmployerItem");
+const menuSeekerItem = document.getElementById("menuSeekerItem");
+const menuProfileBtn = document.getElementById("menuProfileBtn");
+const menuPostJobBtn = document.getElementById("menuPostJobBtn");
+const menuApplicationsBtn = document.getElementById("menuApplicationsBtn");
+const menuChangePassBtn = document.getElementById("menuChangePassBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 
 const employerTabBtn = document.getElementById("employerTabBtn");
@@ -32,6 +44,9 @@ const authModal = document.getElementById("authModal");
 const openLoginBtn = document.getElementById("openLoginBtn");
 const openSignupBtn = document.getElementById("openSignupBtn");
 const closeAuthModal = document.getElementById("closeAuthModal");
+
+const profileModal = document.getElementById("profileModal");
+const closeProfileModal = document.getElementById("closeProfileModal");
 
 const loginFormContainer = document.getElementById("loginFormContainer");
 const signupFormContainer = document.getElementById("signupFormContainer");
@@ -48,6 +63,79 @@ const jobsCountBadge = document.getElementById("jobsCountBadge");
 const applyModal = document.getElementById("applyModal");
 const applyModalBody = document.getElementById("applyModalBody");
 const closeApplyModal = document.getElementById("closeApplyModal");
+
+// Dropdown Toggle
+if (profileMenuBtn) {
+  profileMenuBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    profileDropdown.classList.toggle("show");
+  });
+}
+
+// Close Dropdown when clicking outside
+window.addEventListener("click", (e) => {
+  if (profileDropdown && !profileDropdown.contains(e.target) && e.target !== profileMenuBtn) {
+    profileDropdown.classList.remove("show");
+  }
+  if (e.target === authModal) authModal.style.display = "none";
+  if (e.target === profileModal) profileModal.style.display = "none";
+  if (e.target === applyModal) applyModal.style.display = "none";
+});
+
+// Profile Modal Open/Close
+if (menuProfileBtn) {
+  menuProfileBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    profileDropdown.classList.remove("show");
+    if (!currentUser || !currentUserProfile) return;
+    document.getElementById("viewProfileName").textContent = currentUserProfile.name;
+    document.getElementById("viewProfileEmail").textContent = currentUser.email;
+    document.getElementById("viewProfileRole").textContent = currentUserProfile.role === "employer" ? "Employer" : "Job Seeker";
+    document.getElementById("viewProfileRole").className = "badge " + currentUserProfile.role;
+    document.getElementById("viewProfileUid").textContent = currentUser.uid;
+    profileModal.style.display = "flex";
+  });
+}
+
+if (closeProfileModal) {
+  closeProfileModal.addEventListener("click", () => {
+    profileModal.style.display = "none";
+  });
+}
+
+// Reset Password
+if (menuChangePassBtn) {
+  menuChangePassBtn.addEventListener("click", async (e) => {
+    e.preventDefault();
+    profileDropdown.classList.remove("show");
+    if (!currentUser?.email) return;
+    if (confirm(`Send password reset email to ${currentUser.email}?`)) {
+      try {
+        await auth.sendPasswordResetEmail(currentUser.email);
+        alert("Password reset email sent! Please check your inbox.");
+      } catch (err) {
+        alert("Error: " + err.message);
+      }
+    }
+  });
+}
+
+// Menu Navigations
+if (menuPostJobBtn) {
+  menuPostJobBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    profileDropdown.classList.remove("show");
+    switchTab("employerTab");
+  });
+}
+
+if (menuApplicationsBtn) {
+  menuApplicationsBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    profileDropdown.classList.remove("show");
+    switchTab("seekerTab");
+  });
+}
 
 // Auth Modal Open/Close
 openLoginBtn.addEventListener("click", () => {
@@ -76,12 +164,6 @@ showLogin.addEventListener("click", (e) => {
   e.preventDefault();
   signupFormContainer.style.display = "none";
   loginFormContainer.style.display = "block";
-});
-
-// Close modals when clicking outside
-window.addEventListener("click", (e) => {
-  if (e.target === authModal) authModal.style.display = "none";
-  if (e.target === applyModal) applyModal.style.display = "none";
 });
 
 if (closeApplyModal) {
@@ -131,7 +213,9 @@ loginForm.addEventListener("submit", async (e) => {
 });
 
 // Logout
-logoutBtn.addEventListener("click", () => {
+logoutBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  profileDropdown.classList.remove("show");
   auth.signOut().then(() => {
     alert("Logged out successfully.");
     switchTab("jobsTab");
@@ -146,18 +230,24 @@ auth.onAuthStateChanged(async (user) => {
     if (userDoc.exists) {
       currentUserProfile = userDoc.data();
       userDisplayName.textContent = currentUserProfile.name;
+      menuFullName.textContent = currentUserProfile.name;
+      menuEmail.textContent = currentUser.email;
       userRoleBadge.textContent = currentUserProfile.role === "employer" ? "Employer" : "Job Seeker";
       userRoleBadge.className = "badge " + currentUserProfile.role;
 
       authActions.style.display = "none";
-      userMenu.style.display = "flex";
+      userMenu.style.display = "block";
 
       if (currentUserProfile.role === "employer") {
         employerTabBtn.style.display = "inline-flex";
         seekerTabBtn.style.display = "none";
+        menuEmployerItem.style.display = "block";
+        menuSeekerItem.style.display = "none";
       } else {
         employerTabBtn.style.display = "none";
         seekerTabBtn.style.display = "inline-flex";
+        menuEmployerItem.style.display = "none";
+        menuSeekerItem.style.display = "block";
         loadUserApplications();
       }
     }
@@ -189,7 +279,7 @@ function switchTab(tabId) {
   if (targetBtn) targetBtn.classList.add("active");
 }
 
-// Post a Job (Employer)
+// Post a Job
 postJobForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   if (!currentUser || currentUserProfile?.role !== "employer") {
@@ -219,7 +309,7 @@ postJobForm.addEventListener("submit", async (e) => {
   }
 });
 
-// Fetch Real Jobs from Firestore
+// Fetch Real Jobs
 function listenForJobs() {
   db.collection("jobs").orderBy("createdAt", "desc").onSnapshot(snapshot => {
     allJobs = [];
@@ -410,7 +500,6 @@ function applyFilters() {
   renderJobs(filtered);
 }
 
-// Security Helper to avoid XSS
 function escapeHtml(text) {
   if (!text) return "";
   return text
@@ -421,6 +510,5 @@ function escapeHtml(text) {
     .replace(/'/g, "&#039;");
 }
 
-// Start listener
 listenForJobs();
-          
+    
