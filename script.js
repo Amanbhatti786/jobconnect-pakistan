@@ -1,89 +1,11 @@
-const jobs = [...document.querySelectorAll('.job-card')];
-const filterButtons = [...document.querySelectorAll('.filter-chip')];
-const keywordInput = document.getElementById('keywordInput');
-const locationInput = document.getElementById('locationInput');
-const emptyState = document.getElementById('emptyState');
-let activeCategory = 'All';
-
-function applyFilters() {
-  const keyword = keywordInput.value.trim().toLowerCase();
-  const location = locationInput.value.trim().toLowerCase();
-  let visible = 0;
-  jobs.forEach(job => {
-    const title = (job.dataset.title + ' ' + job.innerText).toLowerCase();
-    const jobLocation = job.dataset.location.toLowerCase();
-    const categoryMatch = activeCategory === 'All' || job.dataset.category === activeCategory;
-    const keywordMatch = !keyword || title.includes(keyword);
-    const locationMatch = !location || jobLocation === location;
-    const show = categoryMatch && keywordMatch && locationMatch;
-    job.hidden = !show;
-    if (show) visible++;
-  });
-  emptyState.hidden = visible !== 0;
-}
-
-filterButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    activeCategory = button.dataset.filter;
-    filterButtons.forEach(item => item.classList.toggle('selected', item === button));
-    applyFilters();
-    document.getElementById('jobs').scrollIntoView({behavior:'smooth'});
-  });
-});
-
-document.querySelectorAll('.category-card').forEach(button => {
-  button.addEventListener('click', () => {
-    const target = button.dataset.filter;
-    const matching = filterButtons.find(item => item.dataset.filter === target);
-    if (matching) matching.click();
-  });
-});
-
-document.getElementById('searchForm').addEventListener('submit', event => {
-  event.preventDefault();
-  activeCategory = 'All';
-  filterButtons.forEach(item => item.classList.toggle('selected', item.dataset.filter === 'All'));
-  applyFilters();
-  document.getElementById('jobs').scrollIntoView({behavior:'smooth'});
-});
-
-document.querySelectorAll('.popular-searches button').forEach(button => {
-  button.addEventListener('click', () => {
-    keywordInput.value = button.dataset.keyword;
-    document.getElementById('searchForm').requestSubmit();
-  });
-});
-
-document.getElementById('resetSearch').addEventListener('click', () => {
-  keywordInput.value = '';
-  locationInput.value = '';
-  activeCategory = 'All';
-  filterButtons.forEach(item => item.classList.toggle('selected', item.dataset.filter === 'All'));
-  applyFilters();
-});
-
-const modal = document.getElementById('jobModal');
-const modalTitle = document.getElementById('modalTitle');
-const modalLocation = document.getElementById('modalLocation');
-document.querySelectorAll('.apply-btn').forEach(button => {
-  button.addEventListener('click', () => {
-    const job = button.closest('.job-card');
-    modalTitle.textContent = job.dataset.title;
-    modalLocation.textContent = 'Sample listing • ' + job.dataset.location;
-    modal.hidden = false;
-    document.body.style.overflow = 'hidden';
-  });
-});
-function closeModal() { modal.hidden = true; document.body.style.overflow = ''; }
-document.getElementById('modalClose').addEventListener('click', closeModal);
-document.getElementById('modalOk').addEventListener('click', closeModal);
-modal.addEventListener('click', event => { if (event.target === modal) closeModal(); });
-document.addEventListener('keydown', event => { if (event.key === 'Escape' && !modal.hidden) closeModal(); });
-
-document.getElementById('menuToggle').addEventListener('click', () => {
-  document.getElementById('mainNav').classList.toggle('open');
-});
-document.querySelectorAll('#mainNav a').forEach(link => link.addEventListener('click', () => {
-  document.getElementById('mainNav').classList.remove('open');
-}));
-document.getElementById('year').textContent = new Date().getFullYear();
+const jobs=[
+{title:"Computer Operator",company:"Sample Private Company",city:"Sukkur",category:"IT & Computer",type:"Full-time",level:"Entry level",salary:"As per company policy",tags:["MS Office","Data Entry","Typing"]},
+{title:"Junior Accountant",company:"Example Business Services",city:"Karachi",category:"Accounts & Finance",type:"Full-time",level:"1–2 years",salary:"Not specified",tags:["Excel","Bookkeeping","Accounts"]},
+{title:"Sales Executive",company:"Sample Retail Network",city:"Lahore",category:"Sales & Marketing",type:"Full-time",level:"Entry level",salary:"Not specified",tags:["Communication","Customer care","Sales"]},
+{title:"School Teacher",company:"Example Education Centre",city:"Hyderabad",category:"Education",type:"Full-time",level:"Relevant experience",salary:"Not specified",tags:["Teaching","Classroom","Communication"]},
+{title:"Customer Support Representative",company:"Example Support Services",city:"Remote",category:"Customer Service",type:"Remote",level:"Entry level",salary:"Not specified",tags:["Communication","Email","Support"]},
+{title:"Office Assistant",company:"Sample Trading Company",city:"Islamabad",category:"Administration",type:"Full-time",level:"Entry level",salary:"Not specified",tags:["Office work","MS Office","Records"]}
+];
+const keyword=document.querySelector("#keyword"),locationSelect=document.querySelector("#location"),category=document.querySelector("#category"),list=document.querySelector("#jobList"),empty=document.querySelector("#empty"),count=document.querySelector("#count");
+function render(){let q=keyword.value.trim().toLowerCase(),loc=locationSelect.value.toLowerCase(),cat=category.value;let found=jobs.filter(j=>(!q||[j.title,j.company,j.city,j.category,j.level,...j.tags].join(" ").toLowerCase().includes(q))&&(!loc||j.city.toLowerCase()===loc)&&(!cat||j.category===cat));count.textContent=found.length;list.innerHTML=found.map(j=>`<article class="job"><div class="jobTop"><div class="jobName"><div class="companyMark">${j.company.split(" ").slice(0,2).map(x=>x[0]).join("").toUpperCase()}</div><div><h3>${j.title}</h3><div class="company">${j.company}</div></div></div><span class="type">${j.type}</span></div><div class="meta"><span>⌖ ${j.city}</span><span>◷ ${j.level}</span><span>₨ ${j.salary}</span></div><div class="tags">${j.tags.map(t=>`<span>${t}</span>`).join("")}</div><div class="jobBottom"><small>DEMO · Not verified</small><button data-title="${j.title}">View details ↗</button></div></article>`).join("");list.hidden=!found.length;empty.hidden=!!found.length;document.querySelectorAll(".jobBottom button").forEach(b=>b.onclick=()=>alert(`${b.dataset.title}\n\nThis is a demo listing, not a real vacancy. Online applications and employer registration are not connected yet. Do not send personal documents or money through this demo website.`))}
+document.querySelector("#searchForm").addEventListener("submit",e=>{e.preventDefault();render();document.querySelector("#jobs").scrollIntoView({behavior:"smooth"})});keyword.addEventListener("input",render);locationSelect.addEventListener("change",render);category.addEventListener("change",render);document.querySelectorAll("[data-key]").forEach(b=>b.onclick=()=>{keyword.value=b.dataset.key;render();document.querySelector("#jobs").scrollIntoView({behavior:"smooth"})});document.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{category.value=b.dataset.cat;render();document.querySelector("#jobs").scrollIntoView({behavior:"smooth"})});document.querySelector("#clear").onclick=()=>{keyword.value="";locationSelect.value="";category.value="";render()};document.querySelector("#menuBtn").onclick=()=>document.querySelector("#nav").classList.toggle("open");document.querySelectorAll("#nav a").forEach(a=>a.onclick=()=>document.querySelector("#nav").classList.remove("open"));document.querySelector("#year").textContent=new Date().getFullYear();render();
