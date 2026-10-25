@@ -43,17 +43,20 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 0;
+  padding: 10px 0;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .brand {
   text-decoration: none;
   color: var(--text-main);
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 700;
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-shrink: 0;
 }
 
 .logo {
@@ -62,7 +65,7 @@ body {
   padding: 4px 8px;
   border-radius: 6px;
   font-weight: 800;
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 .nav-actions {
@@ -73,12 +76,17 @@ body {
 .user-menu {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
+  flex-wrap: nowrap;
 }
 
 .user-name {
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  max-width: 110px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Sub-nav Tabs */
@@ -120,7 +128,7 @@ body {
 .hero {
   background: linear-gradient(135deg, #0a66c2 0%, #004182 100%);
   color: #ffffff;
-  padding: 40px 0;
+  padding: 35px 0;
   margin-top: 10px;
   border-radius: var(--radius);
 }
@@ -139,7 +147,7 @@ body {
 }
 
 .hero h1 {
-  font-size: 1.8rem;
+  font-size: 1.7rem;
   margin: 10px 0;
 }
 
@@ -230,7 +238,7 @@ body {
 }
 
 .section-title h2 {
-  font-size: 1.3rem;
+  font-size: 1.25rem;
 }
 
 .count-badge {
@@ -359,7 +367,7 @@ body {
 
 /* Buttons */
 .btn {
-  padding: 9px 18px;
+  padding: 8px 16px;
   border-radius: 20px;
   font-size: 0.9rem;
   font-weight: 600;
@@ -384,7 +392,7 @@ body {
 }
 
 .btn-sm {
-  padding: 6px 12px;
+  padding: 5px 10px;
   font-size: 0.8rem;
 }
 
@@ -500,4 +508,5 @@ body {
   text-align: center;
   font-size: 0.85rem;
   color: var(--text-muted);
-}
+  }
+  
