@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JobConnect - International Jobs Portal</title>
-  <link rel="stylesheet" href="styles.css?v=10">
+  <link rel="stylesheet" href="styles.css?v=20">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -197,7 +197,7 @@
     <div class="modal-content modal-large">
       <span class="close-modal" id="closeProfileModal">&times;</span>
       <h3>Profile & Career Details</h3>
-      <p class="form-sub">Save complete profile details for smooth applications.</p>
+      <p class="form-sub">Apni details save karein taake jobs ke liye apply karna aasan ho jaye.</p>
 
       <form id="profileForm">
         <div class="profile-section-block">
@@ -361,7 +361,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
-  <!-- Direct Embedded Logic -->
+  <!-- Embedded Core Logic -->
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       const firebaseConfig = {
@@ -385,12 +385,11 @@
 
       const get = (id) => document.getElementById(id);
 
-      // Modals
       const authModal = get("authModal");
       const profileModal = get("profileModal");
       const applyModal = get("applyModal");
 
-      // Open Login / Register
+      // Auth Buttons Click
       if (get("openLoginBtn")) {
         get("openLoginBtn").onclick = () => {
           get("loginFormContainer").style.display = "block";
@@ -427,7 +426,7 @@
         };
       }
 
-      // Dropdown toggle
+      // Dropdown Toggle
       const profileMenuBtn = get("profileMenuBtn");
       const profileDropdown = get("profileDropdown");
       if (profileMenuBtn && profileDropdown) {
@@ -446,7 +445,7 @@
         if (e.target === applyModal) applyModal.style.display = "none";
       };
 
-      // Profile View
+      // Open Profile Modal
       if (get("menuProfileBtn")) {
         get("menuProfileBtn").onclick = (e) => {
           e.preventDefault();
@@ -462,4 +461,4 @@
           if (get("profDegree")) get("profDegree").value = currentUserProfile?.degree || "";
           if (get("profInstitute")) get("profInstitute").value = currentUserProfile?.institute || "";
           if (get("profGradYear")) get("profGradYear").value = currentUserProfile?.gradYear || "";
-          if (get("profGrade")) get("profGrade").value = currentUserProfile?.grade || "";
+          if (get("profGrade")) get("profGrade").value = currentUserProfile?.grade || ""
