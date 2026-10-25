@@ -37,26 +37,30 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
+  padding: 10px 0;
 }
 
-.nav {
+.nav-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nav-top {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 0;
-  flex-wrap: wrap;
-  gap: 8px;
+  width: 100%;
 }
 
 .brand {
   text-decoration: none;
   color: var(--text-main);
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 700;
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-shrink: 0;
 }
 
 .logo {
@@ -73,17 +77,35 @@ body {
   gap: 8px;
 }
 
-.user-menu {
+/* Clean User Strip */
+.user-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f9fa;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  gap: 10px;
+}
+
+.user-info {
   display: flex;
   align-items: center;
   gap: 6px;
-  flex-wrap: nowrap;
+  min-width: 0;
+  flex: 1;
+}
+
+.user-info i {
+  color: var(--primary);
+  font-size: 1.1rem;
+  flex-shrink: 0;
 }
 
 .user-name {
   font-weight: 600;
   font-size: 0.85rem;
-  max-width: 110px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -147,14 +169,14 @@ body {
 }
 
 .hero h1 {
-  font-size: 1.7rem;
+  font-size: 1.6rem;
   margin: 10px 0;
 }
 
 .hero p {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   opacity: 0.9;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
 /* Search Box */
@@ -367,13 +389,18 @@ body {
 
 /* Buttons */
 .btn {
-  padding: 8px 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 16px;
   border-radius: 20px;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 600;
   border: 1px solid transparent;
   cursor: pointer;
   text-align: center;
+  height: 36px;
+  line-height: 1;
 }
 
 .btn-primary {
@@ -386,14 +413,17 @@ body {
 }
 
 .btn-outline {
-  border-color: var(--primary);
+  border: 1px solid var(--primary);
   color: var(--primary);
-  background: transparent;
+  background: #ffffff;
 }
 
 .btn-sm {
-  padding: 5px 10px;
+  padding: 4px 12px;
   font-size: 0.8rem;
+  height: 28px;
+  border-radius: 14px;
+  flex-shrink: 0;
 }
 
 .full-width {
@@ -402,10 +432,11 @@ body {
 
 /* Badges */
 .badge {
-  font-size: 0.75rem;
-  padding: 2px 8px;
+  font-size: 0.72rem;
+  padding: 2px 7px;
   border-radius: 10px;
   font-weight: 600;
+  flex-shrink: 0;
 }
 
 .badge.employer {
@@ -416,11 +447,6 @@ body {
 .badge.seeker {
   background: #e6f4ea;
   color: var(--success);
-}
-
-.badge.info {
-  background: #e8f0fe;
-  color: #1a73e8;
 }
 
 /* Modal */
@@ -473,35 +499,8 @@ body {
   font-weight: 600;
 }
 
-/* Tables */
-.applications-table-wrap {
-  overflow-x: auto;
-  margin-top: 15px;
-}
-
-.app-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-  font-size: 0.9rem;
-}
-
-.app-table th, .app-table td {
-  padding: 10px;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.empty-state {
-  text-align: center;
-  color: var(--text-muted);
-  padding: 30px;
-  background: #fafafa;
-  border-radius: 6px;
-}
-
-/* Footer */
 .footer {
-  margin-top: 50px;
+  margin-top: 40px;
   background: #ffffff;
   border-top: 1px solid var(--border-color);
   padding: 20px 0;
@@ -509,4 +508,3 @@ body {
   font-size: 0.85rem;
   color: var(--text-muted);
   }
-  
