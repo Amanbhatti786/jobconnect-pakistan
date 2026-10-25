@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JobConnect - International Jobs Portal</title>
-  <link rel="stylesheet" href="styles.css?v=5">
+  <link rel="stylesheet" href="styles.css?v=10">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -29,7 +29,7 @@
           <div class="avatar-circle">
             <i class="fa fa-user"></i>
           </div>
-          <span id="userDisplayName" class="nav-user-name"></span>
+          <span id="userDisplayName" class="nav-user-name">User</span>
           <i class="fa fa-chevron-down arrow-icon"></i>
         </button>
 
@@ -38,7 +38,7 @@
           <div class="dropdown-header">
             <p class="dropdown-name" id="menuFullName">User Name</p>
             <p class="dropdown-email" id="menuEmail">user@example.com</p>
-            <span id="userRoleBadge" class="badge"></span>
+            <span id="userRoleBadge" class="badge">Role</span>
           </div>
           <hr>
           <ul class="dropdown-links">
@@ -197,10 +197,9 @@
     <div class="modal-content modal-large">
       <span class="close-modal" id="closeProfileModal">&times;</span>
       <h3>Profile & Career Details</h3>
-      <p class="form-sub">Apni mukammal details save karein taake jobs ke liye apply karna aasan ho jaye.</p>
+      <p class="form-sub">Save complete profile details for smooth applications.</p>
 
       <form id="profileForm">
-        <!-- Personal Details -->
         <div class="profile-section-block">
           <h4><i class="fa fa-id-card"></i> Personal Information</h4>
           <div class="form-grid">
@@ -227,7 +226,6 @@
           </div>
         </div>
 
-        <!-- Education Details -->
         <div class="profile-section-block">
           <h4><i class="fa fa-graduation-cap"></i> Education</h4>
           <div class="form-grid">
@@ -236,7 +234,7 @@
               <input type="text" id="profDegree" placeholder="e.g. Bachelor in Computer Science / Intermediate">
             </div>
             <div class="form-group">
-              <label>Institute / University / Board</label>
+              <label>Institute / Board</label>
               <input type="text" id="profInstitute" placeholder="e.g. University of Sindh / BISE Sukkur">
             </div>
             <div class="form-group">
@@ -244,13 +242,12 @@
               <input type="text" id="profGradYear" placeholder="e.g. 2024">
             </div>
             <div class="form-group">
-              <label>Grade / Division / CGPA</label>
+              <label>Grade / CGPA</label>
               <input type="text" id="profGrade" placeholder="e.g. A Grade / 3.4 CGPA">
             </div>
           </div>
         </div>
 
-        <!-- Experience Details -->
         <div class="profile-section-block">
           <h4><i class="fa fa-briefcase"></i> Work Experience</h4>
           <div class="form-grid">
@@ -263,26 +260,25 @@
               <input type="text" id="profLastRole" placeholder="e.g. Computer Operator">
             </div>
             <div class="form-group full-width">
-              <label>Previous Company / Organization</label>
+              <label>Previous Organization</label>
               <input type="text" id="profLastCompany" placeholder="e.g. Shah Latif Model School">
             </div>
           </div>
         </div>
 
-        <!-- Skills & Certificates -->
         <div class="profile-section-block">
-          <h4><i class="fa fa-certificate"></i> Skills, Certificates & CV Link</h4>
+          <h4><i class="fa fa-certificate"></i> Skills & CV Link</h4>
           <div class="form-grid">
             <div class="form-group full-width">
-              <label>Key Skills (comma separated)</label>
+              <label>Key Skills</label>
               <input type="text" id="profSkills" placeholder="e.g. MS Office, Fast Typing, InPage Urdu, Data Entry">
             </div>
             <div class="form-group full-width">
               <label>Certificates / Diplomas</label>
-              <input type="text" id="profCerts" placeholder="e.g. Diploma in IT (DIT), CIT, Typing Certificate">
+              <input type="text" id="profCerts" placeholder="e.g. Diploma in IT (DIT), CIT">
             </div>
             <div class="form-group full-width">
-              <label>CV / Resume Link (Google Drive / LinkedIn)</label>
+              <label>CV Link (Google Drive / LinkedIn)</label>
               <input type="url" id="profCvLink" placeholder="https://drive.google.com/file/... or LinkedIn URL">
             </div>
           </div>
@@ -298,10 +294,9 @@
     <div class="modal-content">
       <span class="close-modal" id="closeAuthModal">&times;</span>
       
-      <!-- Login Form -->
       <div id="loginFormContainer">
         <h3>Login to JobConnect</h3>
-        <p class="form-sub">Access your account and opportunities</p>
+        <p class="form-sub">Access your account</p>
         <form id="loginForm">
           <div class="form-group">
             <label>Email Address</label>
@@ -316,7 +311,6 @@
         </form>
       </div>
 
-      <!-- Signup Form -->
       <div id="signupFormContainer" style="display: none;">
         <h3>Create an Account</h3>
         <p class="form-sub">Join as a Job Seeker or Employer</p>
@@ -366,9 +360,106 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  
-  <!-- Main Logic with Cache-Buster -->
-  <script src="script.js?v=5"></script>
-</body>
-      </html>
-                
+
+  <!-- Direct Embedded Logic -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const firebaseConfig = {
+        apiKey: "AIzaSyDYMzWCT9K3ZkephaCaLyiegAgo3Mwiz_4",
+        authDomain: "jobconnect-pakistan.firebaseapp.com",
+        projectId: "jobconnect-pakistan",
+        storageBucket: "jobconnect-pakistan.firebasestorage.app",
+        messagingSenderId: "939137633662",
+        appId: "1:939137633662:web:a52f45ee3938b7e846f72f"
+      };
+
+      if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+      }
+      const auth = firebase.auth();
+      const db = firebase.firestore();
+
+      let currentUser = null;
+      let currentUserProfile = null;
+      let allJobs = [];
+
+      const get = (id) => document.getElementById(id);
+
+      // Modals
+      const authModal = get("authModal");
+      const profileModal = get("profileModal");
+      const applyModal = get("applyModal");
+
+      // Open Login / Register
+      if (get("openLoginBtn")) {
+        get("openLoginBtn").onclick = () => {
+          get("loginFormContainer").style.display = "block";
+          get("signupFormContainer").style.display = "none";
+          authModal.style.display = "flex";
+        };
+      }
+
+      if (get("openSignupBtn")) {
+        get("openSignupBtn").onclick = () => {
+          get("loginFormContainer").style.display = "none";
+          get("signupFormContainer").style.display = "block";
+          authModal.style.display = "flex";
+        };
+      }
+
+      if (get("closeAuthModal")) get("closeAuthModal").onclick = () => authModal.style.display = "none";
+      if (get("closeProfileModal")) get("closeProfileModal").onclick = () => profileModal.style.display = "none";
+      if (get("closeApplyModal")) get("closeApplyModal").onclick = () => applyModal.style.display = "none";
+
+      if (get("showSignup")) {
+        get("showSignup").onclick = (e) => {
+          e.preventDefault();
+          get("loginFormContainer").style.display = "none";
+          get("signupFormContainer").style.display = "block";
+        };
+      }
+
+      if (get("showLogin")) {
+        get("showLogin").onclick = (e) => {
+          e.preventDefault();
+          get("signupFormContainer").style.display = "none";
+          get("loginFormContainer").style.display = "block";
+        };
+      }
+
+      // Dropdown toggle
+      const profileMenuBtn = get("profileMenuBtn");
+      const profileDropdown = get("profileDropdown");
+      if (profileMenuBtn && profileDropdown) {
+        profileMenuBtn.onclick = (e) => {
+          e.stopPropagation();
+          profileDropdown.classList.toggle("show");
+        };
+      }
+
+      window.onclick = (e) => {
+        if (profileDropdown && !profileDropdown.contains(e.target) && e.target !== profileMenuBtn) {
+          profileDropdown.classList.remove("show");
+        }
+        if (e.target === authModal) authModal.style.display = "none";
+        if (e.target === profileModal) profileModal.style.display = "none";
+        if (e.target === applyModal) applyModal.style.display = "none";
+      };
+
+      // Profile View
+      if (get("menuProfileBtn")) {
+        get("menuProfileBtn").onclick = (e) => {
+          e.preventDefault();
+          if (profileDropdown) profileDropdown.classList.remove("show");
+          if (!currentUser) return;
+
+          profileModal.style.display = "flex";
+          if (get("profEmail")) get("profEmail").value = currentUser.email || "";
+          if (get("profName")) get("profName").value = currentUserProfile?.name || "";
+          if (get("profPhone")) get("profPhone").value = currentUserProfile?.phone || "";
+          if (get("profLocation")) get("profLocation").value = currentUserProfile?.location || "";
+          if (get("profBio")) get("profBio").value = currentUserProfile?.bio || "";
+          if (get("profDegree")) get("profDegree").value = currentUserProfile?.degree || "";
+          if (get("profInstitute")) get("profInstitute").value = currentUserProfile?.institute || "";
+          if (get("profGradYear")) get("profGradYear").value = currentUserProfile?.gradYear || "";
+          if (get("profGrade")) get("profGrade").value = currentUserProfile?.grade || "";
