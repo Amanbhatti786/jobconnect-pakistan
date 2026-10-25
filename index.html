@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JobConnect - International Jobs Portal</title>
-  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="stylesheet" href="styles.css?v=4">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -122,9 +122,7 @@
           <h2>Latest Available Opportunities</h2>
           <span id="jobsCountBadge" class="count-badge">Loading jobs...</span>
         </div>
-        <div id="jobsList" class="jobs-grid">
-          <!-- Jobs rendered via JS -->
-        </div>
+        <div id="jobsList" class="jobs-grid"></div>
       </section>
     </section>
 
@@ -194,17 +192,104 @@
     </section>
   </main>
 
-  <!-- Profile Details Modal -->
+  <!-- Complete Profile Details Modal -->
   <div id="profileModal" class="modal">
-    <div class="modal-content">
+    <div class="modal-content modal-large">
       <span class="close-modal" id="closeProfileModal">&times;</span>
-      <h3>Profile Details</h3>
-      <div class="profile-card-details">
-        <p><strong>Account Name:</strong> <span id="viewProfileName"></span></p>
-        <p><strong>Email Address:</strong> <span id="viewProfileEmail"></span></p>
-        <p><strong>User Role:</strong> <span id="viewProfileRole" class="badge"></span></p>
-        <p><strong>Account ID:</strong> <code id="viewProfileUid"></code></p>
-      </div>
+      <h3>Profile & Career Details</h3>
+      <p class="form-sub">Apni mukammal details save karein taake jobs ke liye apply karna aasan ho jaye.</p>
+
+      <form id="profileForm">
+        <!-- 1. Personal Details -->
+        <div class="profile-section-block">
+          <h4><i class="fa fa-id-card"></i> Personal Information</h4>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" id="profName" required>
+            </div>
+            <div class="form-group">
+              <label>Email (Read-only)</label>
+              <input type="email" id="profEmail" readonly style="background:#e9ecef;">
+            </div>
+            <div class="form-group">
+              <label>Phone / WhatsApp Number</label>
+              <input type="tel" id="profPhone" placeholder="+92 300 1234567">
+            </div>
+            <div class="form-group">
+              <label>Location (City, Country)</label>
+              <input type="text" id="profLocation" placeholder="e.g. Sukkur, Pakistan">
+            </div>
+            <div class="form-group full-width">
+              <label>Professional Bio / Summary</label>
+              <textarea id="profBio" rows="2" placeholder="Brief summary about yourself..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Education Details -->
+        <div class="profile-section-block">
+          <h4><i class="fa fa-graduation-cap"></i> Education</h4>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Highest Qualification</label>
+              <input type="text" id="profDegree" placeholder="e.g. Bachelor in Computer Science / Intermediate">
+            </div>
+            <div class="form-group">
+              <label>Institute / University / Board</label>
+              <input type="text" id="profInstitute" placeholder="e.g. University of Sindh / BISE Sukkur">
+            </div>
+            <div class="form-group">
+              <label>Passing Year</label>
+              <input type="text" id="profGradYear" placeholder="e.g. 2024">
+            </div>
+            <div class="form-group">
+              <label>Grade / Division / CGPA</label>
+              <input type="text" id="profGrade" placeholder="e.g. A Grade / 3.4 CGPA">
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Experience Details -->
+        <div class="profile-section-block">
+          <h4><i class="fa fa-briefcase"></i> Work Experience</h4>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Total Experience</label>
+              <input type="text" id="profTotalExp" placeholder="e.g. 2 Years / Fresh">
+            </div>
+            <div class="form-group">
+              <label>Recent Job Title</label>
+              <input type="text" id="profLastRole" placeholder="e.g. Computer Operator">
+            </div>
+            <div class="form-group full-width">
+              <label>Previous Company / Organization</label>
+              <input type="text" id="profLastCompany" placeholder="e.g. Shah Latif Model School">
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Skills, Certificates & Resume -->
+        <div class="profile-section-block">
+          <h4><i class="fa fa-certificate"></i> Skills, Certificates & CV Link</h4>
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label>Key Skills (comma separated)</label>
+              <input type="text" id="profSkills" placeholder="e.g. MS Office, Fast Typing, InPage Urdu, Data Entry">
+            </div>
+            <div class="form-group full-width">
+              <label>Certificates / Diplomas</label>
+              <input type="text" id="profCerts" placeholder="e.g. Diploma in IT (DIT), CIT, Typing Certificate">
+            </div>
+            <div class="form-group full-width">
+              <label>CV / Resume Link (Google Drive / LinkedIn)</label>
+              <input type="url" id="profCvLink" placeholder="https://drive.google.com/file/... or LinkedIn URL">
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary full-width" style="margin-top: 15px;"><i class="fa fa-save"></i> Save Profile Details</button>
+      </form>
     </div>
   </div>
 
@@ -212,7 +297,6 @@
   <div id="authModal" class="modal">
     <div class="modal-content">
       <span class="close-modal" id="closeAuthModal">&times;</span>
-      
       <div id="loginFormContainer">
         <h3>Login to JobConnect</h3>
         <p class="form-sub">Access your account and opportunities</p>
@@ -279,7 +363,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="script.js?v=3"></script>
+  <script src="script.js?v=4"></script>
 </body>
-        </html>
-        
+  </html>
+                
