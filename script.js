@@ -1,11 +1,11 @@
 // Firebase Configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyDYMzwCT9K3ZkephaCalyIegAgo3MwIz_4",
+  apiKey: "AIzaSyDYMzWCT9K3ZkephaCaLyiegAgo3Mwiz_4",
   authDomain: "jobconnect-pakistan.firebaseapp.com",
   projectId: "jobconnect-pakistan",
   storageBucket: "jobconnect-pakistan.firebasestorage.app",
   messagingSenderId: "939137633662",
-  appId: "1:939137633662:web:a62fe46ee3930b7e0467f2"
+  appId: "1:939137633662:web:a52f45ee3938b7e846f72f"
 };
 
 // Initialize Firebase
@@ -423,4 +423,4 @@ function escapeHtml(text) {
 
 // Start listener
 listenForJobs();
-    
+          
