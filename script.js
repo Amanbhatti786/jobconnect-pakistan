@@ -47,6 +47,7 @@ const closeAuthModal = document.getElementById("closeAuthModal");
 
 const profileModal = document.getElementById("profileModal");
 const closeProfileModal = document.getElementById("closeProfileModal");
+const profileForm = document.getElementById("profileForm");
 
 const loginFormContainer = document.getElementById("loginFormContainer");
 const signupFormContainer = document.getElementById("signupFormContainer");
@@ -72,7 +73,7 @@ if (profileMenuBtn) {
   });
 }
 
-// Close Dropdown when clicking outside
+// Close Dropdown and Modals
 window.addEventListener("click", (e) => {
   if (profileDropdown && !profileDropdown.contains(e.target) && e.target !== profileMenuBtn) {
     profileDropdown.classList.remove("show");
@@ -82,17 +83,32 @@ window.addEventListener("click", (e) => {
   if (e.target === applyModal) applyModal.style.display = "none";
 });
 
-// Profile Modal Open/Close
+// Profile Modal Open & Populate
 if (menuProfileBtn) {
   menuProfileBtn.addEventListener("click", (e) => {
     e.preventDefault();
     profileDropdown.classList.remove("show");
     if (!currentUser || !currentUserProfile) return;
-    document.getElementById("viewProfileName").textContent = currentUserProfile.name;
-    document.getElementById("viewProfileEmail").textContent = currentUser.email;
-    document.getElementById("viewProfileRole").textContent = currentUserProfile.role === "employer" ? "Employer" : "Job Seeker";
-    document.getElementById("viewProfileRole").className = "badge " + currentUserProfile.role;
-    document.getElementById("viewProfileUid").textContent = currentUser.uid;
+
+    document.getElementById("profName").value = currentUserProfile.name || "";
+    document.getElementById("profEmail").value = currentUser.email || "";
+    document.getElementById("profPhone").value = currentUserProfile.phone || "";
+    document.getElementById("profLocation").value = currentUserProfile.location || "";
+    document.getElementById("profBio").value = currentUserProfile.bio || "";
+
+    document.getElementById("profDegree").value = currentUserProfile.degree || "";
+    document.getElementById("profInstitute").value = currentUserProfile.institute || "";
+    document.getElementById("profGradYear").value = currentUserProfile.gradYear || "";
+    document.getElementById("profGrade").value = currentUserProfile.grade || "";
+
+    document.getElementById("profTotalExp").value = currentUserProfile.totalExp || "";
+    document.getElementById("profLastRole").value = currentUserProfile.lastRole || "";
+    document.getElementById("profLastCompany").value = currentUserProfile.lastCompany || "";
+
+    document.getElementById("profSkills").value = currentUserProfile.skills || "";
+    document.getElementById("profCerts").value = currentUserProfile.certs || "";
+    document.getElementById("profCvLink").value = currentUserProfile.cvLink || "";
+
     profileModal.style.display = "flex";
   });
 }
@@ -100,6 +116,43 @@ if (menuProfileBtn) {
 if (closeProfileModal) {
   closeProfileModal.addEventListener("click", () => {
     profileModal.style.display = "none";
+  });
+}
+
+// Save Profile Details to Firestore
+if (profileForm) {
+  profileForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!currentUser) return;
+
+    const updatedData = {
+      name: document.getElementById("profName").value.trim(),
+      phone: document.getElementById("profPhone").value.trim(),
+      location: document.getElementById("profLocation").value.trim(),
+      bio: document.getElementById("profBio").value.trim(),
+      degree: document.getElementById("profDegree").value.trim(),
+      institute: document.getElementById("profInstitute").value.trim(),
+      gradYear: document.getElementById("profGradYear").value.trim(),
+      grade: document.getElementById("profGrade").value.trim(),
+      totalExp: document.getElementById("profTotalExp").value.trim(),
+      lastRole: document.getElementById("profLastRole").value.trim(),
+      lastCompany: document.getElementById("profLastCompany").value.trim(),
+      skills: document.getElementById("profSkills").value.trim(),
+      certs: document.getElementById("profCerts").value.trim(),
+      cvLink: document.getElementById("profCvLink").value.trim(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    try {
+      await db.collection("users").doc(currentUser.uid).update(updatedData);
+      currentUserProfile = { ...currentUserProfile, ...updatedData };
+      userDisplayName.textContent = updatedData.name;
+      menuFullName.textContent = updatedData.name;
+      alert("Profile details saved successfully!");
+      profileModal.style.display = "none";
+    } catch (err) {
+      alert("Error saving profile: " + err.message);
+    }
   });
 }
 
@@ -355,7 +408,7 @@ function renderJobs(list) {
   });
 }
 
-// Open Apply & Details Modal
+// Open Apply & Details Modal (Auto-fill Seeker Profile)
 window.openApplyDialog = function(jobId) {
   const job = allJobs.find(j => j.id === jobId);
   if (!job) return;
@@ -382,8 +435,16 @@ window.openApplyDialog = function(jobId) {
         <input type="email" id="applicantEmail" required value="${currentUser?.email || ''}">
       </div>
       <div class="form-group">
-        <label>LinkedIn or Portfolio / CV Link</label>
-        <input type="url" id="applicantLink" required placeholder="https://linkedin.com/in/username or Google Drive CV link">
+        <label>Phone / WhatsApp Number</label>
+        <input type="tel" id="applicantPhone" value="${currentUserProfile?.phone || ''}" placeholder="+92 300 1234567">
+      </div>
+      <div class="form-group">
+        <label>Qualifications / Skills Summary</label>
+        <input type="text" id="applicantSkills" value="${currentUserProfile?.skills || currentUserProfile?.degree || ''}" placeholder="e.g. DIT, MS Office, Fast Typing">
+      </div>
+      <div class="form-group">
+        <label>CV / Portfolio Link</label>
+        <input type="url" id="applicantLink" required value="${currentUserProfile?.cvLink || ''}" placeholder="https://drive.google.com/file/... or LinkedIn URL">
       </div>
       <button type="submit" class="btn btn-primary full-width">Submit Application</button>
     </form>
@@ -405,6 +466,8 @@ window.openApplyDialog = function(jobId) {
       applicantId: currentUser.uid,
       applicantName: document.getElementById("applicantName").value.trim(),
       applicantEmail: document.getElementById("applicantEmail").value.trim(),
+      applicantPhone: document.getElementById("applicantPhone").value.trim(),
+      applicantSkills: document.getElementById("applicantSkills").value.trim(),
       applicantLink: document.getElementById("applicantLink").value.trim(),
       appliedAt: firebase.firestore.FieldValue.serverTimestamp()
     };
@@ -486,29 +549,4 @@ function applyFilters() {
   const filtered = allJobs.filter(job => {
     const matchesKeyword = !query || 
       job.title.toLowerCase().includes(query) || 
-      job.company.toLowerCase().includes(query) || 
-      job.description.toLowerCase().includes(query);
-
-    const matchesCountry = country === "all" || 
-      (country === "Remote" ? (job.country === "Remote" || job.city.toLowerCase().includes("remote")) : job.country === country);
-
-    const matchesCat = activeCat === "all" || job.category === activeCat;
-
-    return matchesKeyword && matchesCountry && matchesCat;
-  });
-
-  renderJobs(filtered);
-}
-
-function escapeHtml(text) {
-  if (!text) return "";
-  return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-listenForJobs();
-      
+      job.company.toLowerCase(
