@@ -432,8 +432,8 @@ body {
 .form-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 15px;
-  margin-top: 15px;
+  gap: 12px;
+  margin-top: 10px;
 }
 
 @media (min-width: 768px) {
@@ -449,19 +449,19 @@ body {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  margin-bottom: 10px;
 }
 
 .form-group label {
   font-size: 0.85rem;
   font-weight: 600;
+  color: #333;
 }
 
 .form-group input, .form-group select, .form-group textarea {
-  padding: 10px;
+  padding: 9px 12px;
   border: 1px solid var(--border-color);
   border-radius: 6px;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   outline: none;
 }
 
@@ -469,11 +469,32 @@ body {
   resize: vertical;
 }
 
+/* Profile Form Specific Styling */
+.profile-section-block {
+  background: #f9fafb;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.profile-section-block h4 {
+  font-size: 0.95rem;
+  color: var(--primary);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 6px;
+}
+
 /* Buttons */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
   padding: 7px 16px;
   border-radius: 20px;
   font-size: 0.85rem;
@@ -529,18 +550,9 @@ body {
   color: var(--success);
 }
 
-/* Profile Modal Details */
-.profile-card-details p {
-  padding: 8px 0;
-  border-bottom: 1px solid var(--border-color);
-  font-size: 0.9rem;
-}
-
-.profile-card-details code {
-  font-size: 0.75rem;
-  background: #eee;
-  padding: 2px 4px;
-  border-radius: 4px;
+.badge.info {
+  background: #e8f0fe;
+  color: #1a73e8;
 }
 
 /* Modal */
@@ -557,13 +569,17 @@ body {
 
 .modal-content {
   background: #ffffff;
-  padding: 25px;
+  padding: 22px;
   border-radius: var(--radius);
   width: 100%;
   max-width: 500px;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
+}
+
+.modal-content.modal-large {
+  max-width: 680px;
 }
 
 .close-modal {
@@ -593,7 +609,32 @@ body {
   font-weight: 600;
 }
 
-/* Footer */
+/* Tables */
+.applications-table-wrap {
+  overflow-x: auto;
+  margin-top: 15px;
+}
+
+.app-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.app-table th, .app-table td {
+  padding: 10px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 30px;
+  background: #fafafa;
+  border-radius: 6px;
+}
+
 .footer {
   margin-top: 40px;
   background: #ffffff;
