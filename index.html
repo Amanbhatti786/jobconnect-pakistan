@@ -4,25 +4,31 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JobConnect - International Jobs Portal</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=2">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
   <!-- Header -->
   <header class="header">
-    <div class="wrap nav">
-      <a class="brand" href="#">
-        <span class="logo">JC</span>
-        <span>JobConnect <b>Global</b></span>
-      </a>
-      <div class="nav-actions" id="authActions">
-        <button id="openLoginBtn" class="btn btn-outline">Login</button>
-        <button id="openSignupBtn" class="btn btn-primary">Register</button>
+    <div class="wrap nav-container">
+      <div class="nav-top">
+        <a class="brand" href="#">
+          <span class="logo">JC</span>
+          <span>JobConnect <b>Global</b></span>
+        </a>
+        <div class="nav-actions" id="authActions">
+          <button id="openLoginBtn" class="btn btn-outline">Login</button>
+          <button id="openSignupBtn" class="btn btn-primary">Register</button>
+        </div>
       </div>
-      <div class="user-menu" id="userMenu" style="display: none;">
-        <span id="userDisplayName" class="user-name"></span>
-        <span id="userRoleBadge" class="badge"></span>
+
+      <div class="user-strip" id="userMenu" style="display: none;">
+        <div class="user-info">
+          <i class="fa fa-user-circle"></i>
+          <span id="userDisplayName" class="user-name"></span>
+          <span id="userRoleBadge" class="badge"></span>
+        </div>
         <button id="logoutBtn" class="btn btn-sm btn-outline">Logout</button>
       </div>
     </div>
@@ -160,7 +166,7 @@
     </section>
   </main>
 
-  <!-- Auth Modal (Login / Signup) -->
+  <!-- Auth Modal -->
   <div id="authModal" class="modal">
     <div class="modal-content">
       <span class="close-modal" id="closeAuthModal">&times;</span>
@@ -214,7 +220,7 @@
     </div>
   </div>
 
-  <!-- Job Details & Apply Modal -->
+  <!-- Job Details Modal -->
   <div id="applyModal" class="modal">
     <div class="modal-content">
       <span class="close-modal" id="closeApplyModal">&times;</span>
@@ -229,13 +235,11 @@
     </div>
   </footer>
 
-  <!-- Firebase Scripts (Compat Version for Simple Browser Support) -->
+  <!-- Firebase Scripts -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-
-  <!-- Main JavaScript File -->
-  <script src="script.js"></script>
+  <script src="script.js?v=2"></script>
 </body>
   </html>
   
