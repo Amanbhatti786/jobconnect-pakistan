@@ -9,7 +9,9 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 const auth = firebase.auth();
 const db = firebase.firestore();
 
@@ -18,144 +20,141 @@ let currentUser = null;
 let currentUserProfile = null;
 let allJobs = [];
 
+// Safe DOM Selectors Helper
+const get = (id) => document.getElementById(id);
+
 // DOM Elements
-const authActions = document.getElementById("authActions");
-const userMenu = document.getElementById("userMenu");
-const profileMenuBtn = document.getElementById("profileMenuBtn");
-const profileDropdown = document.getElementById("profileDropdown");
+const authActions = get("authActions");
+const userMenu = get("userMenu");
+const profileMenuBtn = get("profileMenuBtn");
+const profileDropdown = get("profileDropdown");
+const userDisplayName = get("userDisplayName");
+const menuFullName = get("menuFullName");
+const menuEmail = get("menuEmail");
+const userRoleBadge = get("userRoleBadge");
 
-const userDisplayName = document.getElementById("userDisplayName");
-const menuFullName = document.getElementById("menuFullName");
-const menuEmail = document.getElementById("menuEmail");
-const userRoleBadge = document.getElementById("userRoleBadge");
+const menuEmployerItem = get("menuEmployerItem");
+const menuSeekerItem = get("menuSeekerItem");
+const menuProfileBtn = get("menuProfileBtn");
+const menuPostJobBtn = get("menuPostJobBtn");
+const menuApplicationsBtn = get("menuApplicationsBtn");
+const menuChangePassBtn = get("menuChangePassBtn");
+const logoutBtn = get("logoutBtn");
 
-const menuEmployerItem = document.getElementById("menuEmployerItem");
-const menuSeekerItem = document.getElementById("menuSeekerItem");
-const menuProfileBtn = document.getElementById("menuProfileBtn");
-const menuPostJobBtn = document.getElementById("menuPostJobBtn");
-const menuApplicationsBtn = document.getElementById("menuApplicationsBtn");
-const menuChangePassBtn = document.getElementById("menuChangePassBtn");
-const logoutBtn = document.getElementById("logoutBtn");
+const employerTabBtn = get("employerTabBtn");
+const seekerTabBtn = get("seekerTabBtn");
 
-const employerTabBtn = document.getElementById("employerTabBtn");
-const seekerTabBtn = document.getElementById("seekerTabBtn");
+const authModal = get("authModal");
+const openLoginBtn = get("openLoginBtn");
+const openSignupBtn = get("openSignupBtn");
+const closeAuthModal = get("closeAuthModal");
 
-const authModal = document.getElementById("authModal");
-const openLoginBtn = document.getElementById("openLoginBtn");
-const openSignupBtn = document.getElementById("openSignupBtn");
-const closeAuthModal = document.getElementById("closeAuthModal");
+const profileModal = get("profileModal");
+const closeProfileModal = get("closeProfileModal");
+const profileForm = get("profileForm");
 
-const profileModal = document.getElementById("profileModal");
-const closeProfileModal = document.getElementById("closeProfileModal");
-const profileForm = document.getElementById("profileForm");
+const loginFormContainer = get("loginFormContainer");
+const signupFormContainer = get("signupFormContainer");
+const showSignup = get("showSignup");
+const showLogin = get("showLogin");
 
-const loginFormContainer = document.getElementById("loginFormContainer");
-const signupFormContainer = document.getElementById("signupFormContainer");
-const showSignup = document.getElementById("showSignup");
-const showLogin = document.getElementById("showLogin");
+const loginForm = get("loginForm");
+const signupForm = get("signupForm");
+const postJobForm = get("postJobForm");
+const searchForm = get("searchForm");
 
-const loginForm = document.getElementById("loginForm");
-const signupForm = document.getElementById("signupForm");
-const postJobForm = document.getElementById("postJobForm");
-const searchForm = document.getElementById("searchForm");
-
-const jobsList = document.getElementById("jobsList");
-const jobsCountBadge = document.getElementById("jobsCountBadge");
-const applyModal = document.getElementById("applyModal");
-const applyModalBody = document.getElementById("applyModalBody");
-const closeApplyModal = document.getElementById("closeApplyModal");
+const jobsList = get("jobsList");
+const jobsCountBadge = get("jobsCountBadge");
+const applyModal = get("applyModal");
+const applyModalBody = get("applyModalBody");
+const closeApplyModal = get("closeApplyModal");
 
 // Dropdown Toggle
-if (profileMenuBtn) {
+if (profileMenuBtn && profileDropdown) {
   profileMenuBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     profileDropdown.classList.toggle("show");
   });
 }
 
-// Close Dropdown and Modals
+// Window clicks for Modals & Dropdown
 window.addEventListener("click", (e) => {
   if (profileDropdown && !profileDropdown.contains(e.target) && e.target !== profileMenuBtn) {
     profileDropdown.classList.remove("show");
   }
-  if (e.target === authModal) authModal.style.display = "none";
-  if (e.target === profileModal) profileModal.style.display = "none";
-  if (e.target === applyModal) applyModal.style.display = "none";
+  if (authModal && e.target === authModal) authModal.style.display = "none";
+  if (profileModal && e.target === profileModal) profileModal.style.display = "none";
+  if (applyModal && e.target === applyModal) applyModal.style.display = "none";
 });
 
-// Profile Modal Open & Populate (Fixed to open directly)
-if (menuProfileBtn) {
+// Profile Modal Open
+if (menuProfileBtn && profileModal) {
   menuProfileBtn.addEventListener("click", (e) => {
     e.preventDefault();
     if (profileDropdown) profileDropdown.classList.remove("show");
 
     if (!currentUser) {
-      alert("براہ کرم پہلے لاگ ان کریں۔");
+      alert("Please login first.");
       return;
     }
 
-    // Modal کھولیں
     profileModal.style.display = "flex";
 
-    // ڈیٹا فل کریں
-    document.getElementById("profEmail").value = currentUser.email || "";
-    document.getElementById("profName").value = currentUserProfile?.name || "";
-    document.getElementById("profPhone").value = currentUserProfile?.phone || "";
-    document.getElementById("profLocation").value = currentUserProfile?.location || "";
-    document.getElementById("profBio").value = currentUserProfile?.bio || "";
-
-    document.getElementById("profDegree").value = currentUserProfile?.degree || "";
-    document.getElementById("profInstitute").value = currentUserProfile?.institute || "";
-    document.getElementById("profGradYear").value = currentUserProfile?.gradYear || "";
-    document.getElementById("profGrade").value = currentUserProfile?.grade || "";
-
-    document.getElementById("profTotalExp").value = currentUserProfile?.totalExp || "";
-    document.getElementById("profLastRole").value = currentUserProfile?.lastRole || "";
-    document.getElementById("profLastCompany").value = currentUserProfile?.lastCompany || "";
-
-    document.getElementById("profSkills").value = currentUserProfile?.skills || "";
-    document.getElementById("profCerts").value = currentUserProfile?.certs || "";
-    document.getElementById("profCvLink").value = currentUserProfile?.cvLink || "";
+    if (get("profEmail")) get("profEmail").value = currentUser.email || "";
+    if (get("profName")) get("profName").value = currentUserProfile?.name || "";
+    if (get("profPhone")) get("profPhone").value = currentUserProfile?.phone || "";
+    if (get("profLocation")) get("profLocation").value = currentUserProfile?.location || "";
+    if (get("profBio")) get("profBio").value = currentUserProfile?.bio || "";
+    if (get("profDegree")) get("profDegree").value = currentUserProfile?.degree || "";
+    if (get("profInstitute")) get("profInstitute").value = currentUserProfile?.institute || "";
+    if (get("profGradYear")) get("profGradYear").value = currentUserProfile?.gradYear || "";
+    if (get("profGrade")) get("profGrade").value = currentUserProfile?.grade || "";
+    if (get("profTotalExp")) get("profTotalExp").value = currentUserProfile?.totalExp || "";
+    if (get("profLastRole")) get("profLastRole").value = currentUserProfile?.lastRole || "";
+    if (get("profLastCompany")) get("profLastCompany").value = currentUserProfile?.lastCompany || "";
+    if (get("profSkills")) get("profSkills").value = currentUserProfile?.skills || "";
+    if (get("profCerts")) get("profCerts").value = currentUserProfile?.certs || "";
+    if (get("profCvLink")) get("profCvLink").value = currentUserProfile?.cvLink || "";
   });
 }
 
-if (closeProfileModal) {
+if (closeProfileModal && profileModal) {
   closeProfileModal.addEventListener("click", () => {
     profileModal.style.display = "none";
   });
 }
 
-// Save Profile Details to Firestore
+// Save Profile
 if (profileForm) {
   profileForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     if (!currentUser) return;
 
     const updatedData = {
-      name: document.getElementById("profName").value.trim(),
-      phone: document.getElementById("profPhone").value.trim(),
-      location: document.getElementById("profLocation").value.trim(),
-      bio: document.getElementById("profBio").value.trim(),
-      degree: document.getElementById("profDegree").value.trim(),
-      institute: document.getElementById("profInstitute").value.trim(),
-      gradYear: document.getElementById("profGradYear").value.trim(),
-      grade: document.getElementById("profGrade").value.trim(),
-      totalExp: document.getElementById("profTotalExp").value.trim(),
-      lastRole: document.getElementById("profLastRole").value.trim(),
-      lastCompany: document.getElementById("profLastCompany").value.trim(),
-      skills: document.getElementById("profSkills").value.trim(),
-      certs: document.getElementById("profCerts").value.trim(),
-      cvLink: document.getElementById("profCvLink").value.trim(),
+      name: get("profName") ? get("profName").value.trim() : "",
+      phone: get("profPhone") ? get("profPhone").value.trim() : "",
+      location: get("profLocation") ? get("profLocation").value.trim() : "",
+      bio: get("profBio") ? get("profBio").value.trim() : "",
+      degree: get("profDegree") ? get("profDegree").value.trim() : "",
+      institute: get("profInstitute") ? get("profInstitute").value.trim() : "",
+      gradYear: get("profGradYear") ? get("profGradYear").value.trim() : "",
+      grade: get("profGrade") ? get("profGrade").value.trim() : "",
+      totalExp: get("profTotalExp") ? get("profTotalExp").value.trim() : "",
+      lastRole: get("profLastRole") ? get("profLastRole").value.trim() : "",
+      lastCompany: get("profLastCompany") ? get("profLastCompany").value.trim() : "",
+      skills: get("profSkills") ? get("profSkills").value.trim() : "",
+      certs: get("profCerts") ? get("profCerts").value.trim() : "",
+      cvLink: get("profCvLink") ? get("profCvLink").value.trim() : "",
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     };
 
     try {
       await db.collection("users").doc(currentUser.uid).update(updatedData);
       currentUserProfile = { ...currentUserProfile, ...updatedData };
-      userDisplayName.textContent = updatedData.name;
-      menuFullName.textContent = updatedData.name;
+      if (userDisplayName) userDisplayName.textContent = updatedData.name;
+      if (menuFullName) menuFullName.textContent = updatedData.name;
       alert("Profile details saved successfully!");
-      profileModal.style.display = "none";
+      if (profileModal) profileModal.style.display = "none";
     } catch (err) {
       alert("Error saving profile: " + err.message);
     }
@@ -166,12 +165,12 @@ if (profileForm) {
 if (menuChangePassBtn) {
   menuChangePassBtn.addEventListener("click", async (e) => {
     e.preventDefault();
-    profileDropdown.classList.remove("show");
+    if (profileDropdown) profileDropdown.classList.remove("show");
     if (!currentUser?.email) return;
     if (confirm(`Send password reset email to ${currentUser.email}?`)) {
       try {
         await auth.sendPasswordResetEmail(currentUser.email);
-        alert("Password reset email sent! Please check your inbox.");
+        alert("Password reset email sent! Check your inbox.");
       } catch (err) {
         alert("Error: " + err.message);
       }
@@ -179,11 +178,11 @@ if (menuChangePassBtn) {
   });
 }
 
-// Menu Navigations
+// Nav links in dropdown
 if (menuPostJobBtn) {
   menuPostJobBtn.addEventListener("click", (e) => {
     e.preventDefault();
-    profileDropdown.classList.remove("show");
+    if (profileDropdown) profileDropdown.classList.remove("show");
     switchTab("employerTab");
   });
 }
@@ -191,137 +190,160 @@ if (menuPostJobBtn) {
 if (menuApplicationsBtn) {
   menuApplicationsBtn.addEventListener("click", (e) => {
     e.preventDefault();
-    profileDropdown.classList.remove("show");
+    if (profileDropdown) profileDropdown.classList.remove("show");
     switchTab("seekerTab");
   });
 }
 
-// Auth Modal Open/Close
-openLoginBtn.addEventListener("click", () => {
-  loginFormContainer.style.display = "block";
-  signupFormContainer.style.display = "none";
-  authModal.style.display = "flex";
-});
+// Open / Close Auth Modals
+if (openLoginBtn && authModal) {
+  openLoginBtn.addEventListener("click", () => {
+    if (loginFormContainer) loginFormContainer.style.display = "block";
+    if (signupFormContainer) signupFormContainer.style.display = "none";
+    authModal.style.display = "flex";
+  });
+}
 
-openSignupBtn.addEventListener("click", () => {
-  loginFormContainer.style.display = "none";
-  signupFormContainer.style.display = "block";
-  authModal.style.display = "flex";
-});
+if (openSignupBtn && authModal) {
+  openSignupBtn.addEventListener("click", () => {
+    if (loginFormContainer) loginFormContainer.style.display = "none";
+    if (signupFormContainer) signupFormContainer.style.display = "block";
+    authModal.style.display = "flex";
+  });
+}
 
-closeAuthModal.addEventListener("click", () => {
-  authModal.style.display = "none";
-});
+if (closeAuthModal && authModal) {
+  closeAuthModal.addEventListener("click", () => {
+    authModal.style.display = "none";
+  });
+}
 
-showSignup.addEventListener("click", (e) => {
-  e.preventDefault();
-  loginFormContainer.style.display = "none";
-  signupFormContainer.style.display = "block";
-});
+if (showSignup) {
+  showSignup.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (loginFormContainer) loginFormContainer.style.display = "none";
+    if (signupFormContainer) signupFormContainer.style.display = "block";
+  });
+}
 
-showLogin.addEventListener("click", (e) => {
-  e.preventDefault();
-  signupFormContainer.style.display = "none";
-  loginFormContainer.style.display = "block";
-});
+if (showLogin) {
+  showLogin.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (signupFormContainer) signupFormContainer.style.display = "none";
+    if (loginFormContainer) loginFormContainer.style.display = "block";
+  });
+}
 
-if (closeApplyModal) {
+if (closeApplyModal && applyModal) {
   closeApplyModal.addEventListener("click", () => {
     applyModal.style.display = "none";
   });
 }
 
 // User Registration
-signupForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const name = document.getElementById("signupName").value.trim();
-  const role = document.getElementById("signupRole").value;
-  const email = document.getElementById("signupEmail").value.trim();
-  const password = document.getElementById("signupPassword").value;
+if (signupForm) {
+  signupForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const name = get("signupName").value.trim();
+    const role = get("signupRole").value;
+    const email = get("signupEmail").value.trim();
+    const password = get("signupPassword").value;
 
-  try {
-    const cred = await auth.createUserWithEmailAndPassword(email, password);
-    await db.collection("users").doc(cred.user.uid).set({
-      name: name,
-      role: role,
-      email: email,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    alert("Account created successfully!");
-    authModal.style.display = "none";
-    signupForm.reset();
-  } catch (error) {
-    alert("Signup Error: " + error.message);
-  }
-});
+    try {
+      const cred = await auth.createUserWithEmailAndPassword(email, password);
+      await db.collection("users").doc(cred.user.uid).set({
+        name: name,
+        role: role,
+        email: email,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      alert("Account created successfully!");
+      if (authModal) authModal.style.display = "none";
+      signupForm.reset();
+    } catch (error) {
+      alert("Signup Error: " + error.message);
+    }
+  });
+}
 
 // User Login
-loginForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const email = document.getElementById("loginEmail").value.trim();
-  const password = document.getElementById("loginPassword").value;
+if (loginForm) {
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = get("loginEmail").value.trim();
+    const password = get("loginPassword").value;
 
-  try {
-    await auth.signInWithEmailAndPassword(email, password);
-    alert("Logged in successfully!");
-    authModal.style.display = "none";
-    loginForm.reset();
-  } catch (error) {
-    alert("Login Error: " + error.message);
-  }
-});
+    try {
+      await auth.signInWithEmailAndPassword(email, password);
+      alert("Logged in successfully!");
+      if (authModal) authModal.style.display = "none";
+      loginForm.reset();
+    } catch (error) {
+      alert("Login Error: " + error.message);
+    }
+  });
+}
 
 // Logout
-logoutBtn.addEventListener("click", (e) => {
-  e.preventDefault();
-  profileDropdown.classList.remove("show");
-  auth.signOut().then(() => {
-    alert("Logged out successfully.");
-    switchTab("jobsTab");
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (profileDropdown) profileDropdown.classList.remove("show");
+    auth.signOut().then(() => {
+      alert("Logged out successfully.");
+      switchTab("jobsTab");
+    });
   });
-});
+}
 
-// Listen to Auth State
+// Auth State Listener
 auth.onAuthStateChanged(async (user) => {
   if (user) {
     currentUser = user;
-    const userDoc = await db.collection("users").doc(user.uid).get();
-    if (userDoc.exists) {
-      currentUserProfile = userDoc.data();
-      userDisplayName.textContent = currentUserProfile.name;
-      menuFullName.textContent = currentUserProfile.name;
-      menuEmail.textContent = currentUser.email;
-      userRoleBadge.textContent = currentUserProfile.role === "employer" ? "Employer" : "Job Seeker";
-      userRoleBadge.className = "badge " + currentUserProfile.role;
+    try {
+      const userDoc = await db.collection("users").doc(user.uid).get();
+      if (userDoc.exists) {
+        currentUserProfile = userDoc.data();
+        if (userDisplayName) userDisplayName.textContent = currentUserProfile.name;
+        if (menuFullName) menuFullName.textContent = currentUserProfile.name;
+        if (menuEmail) menuEmail.textContent = currentUser.email;
 
-      authActions.style.display = "none";
-      userMenu.style.display = "block";
+        if (userRoleBadge) {
+          userRoleBadge.textContent = currentUserProfile.role === "employer" ? "Employer" : "Job Seeker";
+          userRoleBadge.className = "badge " + currentUserProfile.role;
+        }
 
-      if (currentUserProfile.role === "employer") {
-        employerTabBtn.style.display = "inline-flex";
-        seekerTabBtn.style.display = "none";
-        menuEmployerItem.style.display = "block";
-        menuSeekerItem.style.display = "none";
-      } else {
-        employerTabBtn.style.display = "none";
-        seekerTabBtn.style.display = "inline-flex";
-        menuEmployerItem.style.display = "none";
-        menuSeekerItem.style.display = "block";
-        loadUserApplications();
+        if (authActions) authActions.style.display = "none";
+        if (userMenu) userMenu.style.display = "block";
+
+        if (currentUserProfile.role === "employer") {
+          if (employerTabBtn) employerTabBtn.style.display = "inline-flex";
+          if (seekerTabBtn) seekerTabBtn.style.display = "none";
+          if (menuEmployerItem) menuEmployerItem.style.display = "block";
+          if (menuSeekerItem) menuSeekerItem.style.display = "none";
+        } else {
+          if (employerTabBtn) employerTabBtn.style.display = "none";
+          if (seekerTabBtn) seekerTabBtn.style.display = "inline-flex";
+          if (menuEmployerItem) menuEmployerItem.style.display = "none";
+          if (menuSeekerItem) menuSeekerItem.style.display = "block";
+          loadUserApplications();
+        }
       }
+    } catch (e) {
+      console.error("Auth state profile fetch error:", e);
     }
   } else {
     currentUser = null;
     currentUserProfile = null;
-    authActions.style.display = "flex";
-    userMenu.style.display = "none";
-    employerTabBtn.style.display = "none";
-    seekerTabBtn.style.display = "none";
+    if (authActions) authActions.style.display = "flex";
+    if (userMenu) userMenu.style.display = "none";
+    if (employerTabBtn) employerTabBtn.style.display = "none";
+    if (seekerTabBtn) seekerTabBtn.style.display = "none";
   }
 });
 
-// Tab Switching
-document.querySelectorAll(".tab-link").forEach(btn => {
+// Tab Switcher
+document.querySelectorAll(".tab-link").forEach((btn) => {
   btn.addEventListener("click", () => {
     const target = btn.getAttribute("data-tab");
     switchTab(target);
@@ -329,70 +351,78 @@ document.querySelectorAll(".tab-link").forEach(btn => {
 });
 
 function switchTab(tabId) {
-  document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
-  document.querySelectorAll(".tab-link").forEach(el => el.classList.remove("active"));
+  document.querySelectorAll(".tab-content").forEach((el) => el.classList.remove("active"));
+  document.querySelectorAll(".tab-link").forEach((el) => el.classList.remove("active"));
 
-  const targetTab = document.getElementById(tabId);
+  const targetTab = get(tabId);
   const targetBtn = document.querySelector(`[data-tab="${tabId}"]`);
   if (targetTab) targetTab.classList.add("active");
   if (targetBtn) targetBtn.classList.add("active");
 }
 
-// Post a Job
-postJobForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  if (!currentUser || currentUserProfile?.role !== "employer") {
-    alert("Only registered employers can post jobs.");
-    return;
-  }
+// Post Job Form
+if (postJobForm) {
+  postJobForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (!currentUser || currentUserProfile?.role !== "employer") {
+      alert("Only registered employers can post jobs.");
+      return;
+    }
 
-  const newJob = {
-    title: document.getElementById("jobTitle").value.trim(),
-    company: document.getElementById("jobCompany").value.trim(),
-    country: document.getElementById("jobCountry").value,
-    city: document.getElementById("jobCity").value.trim(),
-    category: document.getElementById("jobCategory").value,
-    salary: document.getElementById("jobSalary").value.trim() || "Negotiable",
-    description: document.getElementById("jobDesc").value.trim(),
-    postedBy: currentUser.uid,
-    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-  };
+    const newJob = {
+      title: get("jobTitle").value.trim(),
+      company: get("jobCompany").value.trim(),
+      country: get("jobCountry").value,
+      city: get("jobCity").value.trim(),
+      category: get("jobCategory").value,
+      salary: get("jobSalary").value.trim() || "Negotiable",
+      description: get("jobDesc").value.trim(),
+      postedBy: currentUser.uid,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
 
-  try {
-    await db.collection("jobs").add(newJob);
-    alert("Job listing posted successfully!");
-    postJobForm.reset();
-    switchTab("jobsTab");
-  } catch (error) {
-    alert("Error posting job: " + error.message);
-  }
-});
-
-// Fetch Real Jobs
-function listenForJobs() {
-  db.collection("jobs").orderBy("createdAt", "desc").onSnapshot(snapshot => {
-    allJobs = [];
-    snapshot.forEach(doc => {
-      allJobs.push({ id: doc.id, ...doc.data() });
-    });
-    renderJobs(allJobs);
-  }, error => {
-    console.error("Firestore read error:", error);
-    jobsCountBadge.textContent = "Error loading jobs";
+    try {
+      await db.collection("jobs").add(newJob);
+      alert("Job listing posted successfully!");
+      postJobForm.reset();
+      switchTab("jobsTab");
+    } catch (error) {
+      alert("Error posting job: " + error.message);
+    }
   });
+}
+
+// Fetch Jobs
+function listenForJobs() {
+  db.collection("jobs")
+    .orderBy("createdAt", "desc")
+    .onSnapshot(
+      (snapshot) => {
+        allJobs = [];
+        snapshot.forEach((doc) => {
+          allJobs.push({ id: doc.id, ...doc.data() });
+        });
+        renderJobs(allJobs);
+      },
+      (error) => {
+        console.error("Firestore read error:", error);
+        if (jobsCountBadge) jobsCountBadge.textContent = "Error loading jobs";
+      }
+    );
 }
 
 // Render Jobs
 function renderJobs(list) {
-  jobsCountBadge.textContent = `${list.length} Open Positions`;
-  jobsList.innerHTML = "";
+  if (jobsCountBadge) jobsCountBadge.textContent = `${list.length} Open Positions`;
+  if (!jobsList) return;
 
+  jobsList.innerHTML = "";
   if (list.length === 0) {
     jobsList.innerHTML = `<div class="empty-state">No jobs found matching your criteria.</div>`;
     return;
   }
 
-  list.forEach(job => {
+  list.forEach((job) => {
     const card = document.createElement("div");
     card.className = "job-card";
     card.innerHTML = `
@@ -414,10 +444,10 @@ function renderJobs(list) {
   });
 }
 
-// Open Apply & Details Modal (Auto-fill Seeker Profile)
-window.openApplyDialog = function(jobId) {
-  const job = allJobs.find(j => j.id === jobId);
-  if (!job) return;
+// Open Apply Dialog
+window.openApplyDialog = function (jobId) {
+  const job = allJobs.find((j) => j.id === jobId);
+  if (!job || !applyModalBody || !applyModal) return;
 
   applyModalBody.innerHTML = `
     <h2>${escapeHtml(job.title)}</h2>
@@ -441,16 +471,16 @@ window.openApplyDialog = function(jobId) {
         <input type="email" id="applicantEmail" required value="${currentUser?.email || ''}">
       </div>
       <div class="form-group">
-        <label>Phone / WhatsApp Number</label>
-        <input type="tel" id="applicantPhone" value="${currentUserProfile?.phone || ''}" placeholder="+92 300 1234567">
+        <label>Phone Number</label>
+        <input type="tel" id="applicantPhone" value="${currentUserProfile?.phone || ''}">
       </div>
       <div class="form-group">
-        <label>Qualifications / Skills Summary</label>
-        <input type="text" id="applicantSkills" value="${currentUserProfile?.skills || currentUserProfile?.degree || ''}" placeholder="e.g. DIT, MS Office, Fast Typing">
+        <label>Qualifications / Skills</label>
+        <input type="text" id="applicantSkills" value="${currentUserProfile?.skills || currentUserProfile?.degree || ''}">
       </div>
       <div class="form-group">
         <label>CV / Portfolio Link</label>
-        <input type="url" id="applicantLink" required value="${currentUserProfile?.cvLink || ''}" placeholder="https://drive.google.com/file/... or LinkedIn URL">
+        <input type="url" id="applicantLink" required value="${currentUserProfile?.cvLink || ''}" placeholder="https://drive.google.com/file/... or LinkedIn">
       </div>
       <button type="submit" class="btn btn-primary full-width">Submit Application</button>
     </form>
@@ -458,72 +488,63 @@ window.openApplyDialog = function(jobId) {
 
   applyModal.style.display = "flex";
 
-  document.getElementById("applyJobForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    if (!currentUser) {
-      alert("Please login or create an account to apply.");
-      return;
-    }
+  const appForm = get("applyJobForm");
+  if (appForm) {
+    appForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!currentUser) {
+        alert("Please login or create an account to apply.");
+        return;
+      }
 
-    const application = {
-      jobId: job.id,
-      jobTitle: job.title,
-      company: job.company,
-      applicantId: currentUser.uid,
-      applicantName: document.getElementById("applicantName").value.trim(),
-      applicantEmail: document.getElementById("applicantEmail").value.trim(),
-      applicantPhone: document.getElementById("applicantPhone").value.trim(),
-      applicantSkills: document.getElementById("applicantSkills").value.trim(),
-      applicantLink: document.getElementById("applicantLink").value.trim(),
-      appliedAt: firebase.firestore.FieldValue.serverTimestamp()
-    };
+      const application = {
+        jobId: job.id,
+        jobTitle: job.title,
+        company: job.company,
+        applicantId: currentUser.uid,
+        applicantName: get("applicantName").value.trim(),
+        applicantEmail: get("applicantEmail").value.trim(),
+        applicantPhone: get("applicantPhone").value.trim(),
+        applicantSkills: get("applicantSkills").value.trim(),
+        applicantLink: get("applicantLink").value.trim(),
+        appliedAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
 
-    try {
-      await db.collection("applications").add(application);
-      alert("Application submitted successfully!");
-      applyModal.style.display = "none";
-      if (currentUserProfile?.role === "seeker") loadUserApplications();
-    } catch (err) {
-      alert("Error submitting application: " + err.message);
-    }
-  });
+      try {
+        await db.collection("applications").add(application);
+        alert("Application submitted successfully!");
+        applyModal.style.display = "none";
+        if (currentUserProfile?.role === "seeker") loadUserApplications();
+      } catch (err) {
+        alert("Error submitting application: " + err.message);
+      }
+    });
+  }
 };
 
 // Seeker Applications
 async function loadUserApplications() {
-  const container = document.getElementById("applicationsList");
-  if (!currentUser) return;
+  const container = get("applicationsList");
+  if (!currentUser || !container) return;
 
   try {
-    const snap = await db.collection("applications")
-      .where("applicantId", "==", currentUser.uid)
-      .get();
-
+    const snap = await db.collection("applications").where("applicantId", "==", currentUser.uid).get();
     if (snap.empty) {
       container.innerHTML = `<p class="empty-state">You have not applied for any jobs yet.</p>`;
       return;
     }
 
     let html = `<div class="applications-table-wrap"><table class="app-table">
-      <thead>
-        <tr>
-          <th>Job Title</th>
-          <th>Company</th>
-          <th>CV / Portfolio Link</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>`;
+      <thead><tr><th>Job Title</th><th>Company</th><th>CV / Portfolio</th><th>Status</th></tr></thead><tbody>`;
 
-    snap.forEach(doc => {
+    snap.forEach((doc) => {
       const data = doc.data();
-      html += `
-        <tr>
-          <td><strong>${escapeHtml(data.jobTitle)}</strong></td>
-          <td>${escapeHtml(data.company)}</td>
-          <td><a href="${escapeHtml(data.applicantLink)}" target="_blank">View Link</a></td>
-          <td><span class="badge info">Submitted</span></td>
-        </tr>`;
+      html += `<tr>
+        <td><strong>${escapeHtml(data.jobTitle)}</strong></td>
+        <td>${escapeHtml(data.company)}</td>
+        <td><a href="${escapeHtml(data.applicantLink)}" target="_blank">View Link</a></td>
+        <td><span class="badge info">Submitted</span></td>
+      </tr>`;
     });
 
     html += `</tbody></table></div>`;
@@ -533,23 +554,14 @@ async function loadUserApplications() {
   }
 }
 
-// Search & Filter
-searchForm.addEventListener("submit", (e) => {
-  e.preventDefault();
-  applyFilters();
-});
-
-document.querySelectorAll(".cat-pill").forEach(pill => {
-  pill.addEventListener("click", () => {
-    document.querySelectorAll(".cat-pill").forEach(p => p.classList.remove("active"));
-    pill.classList.add("active");
+// Search
+if (searchForm) {
+  searchForm.addEventListener("submit", (e) => {
+    e.preventDefault();
     applyFilters();
   });
-});
+}
 
-function applyFilters() {
-  const query = document.getElementById("keyword").value.toLowerCase().trim();
-  const country = document.getElementById("countryFilter").value;
-  const activeCat = document.querySelector(".cat-pill.active")?.getAttribute("data-cat") || "all";
-
-  const filtered = allJobs
+document.querySelectorAll(".cat-pill").forEach((pill) => {
+  pill.addEventListener("click", () => {
+    document.querySe
