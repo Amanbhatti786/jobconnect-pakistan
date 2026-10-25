@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JobConnect - International Jobs Portal</title>
-  <link rel="stylesheet" href="styles.css?v=4">
+  <link rel="stylesheet" href="styles.css?v=5">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -19,13 +19,13 @@
 
       <!-- Before Login: Buttons -->
       <div class="nav-actions" id="authActions">
-        <button id="openLoginBtn" class="btn btn-outline">Login</button>
-        <button id="openSignupBtn" class="btn btn-primary">Register</button>
+        <button id="openLoginBtn" class="btn btn-outline" type="button">Login</button>
+        <button id="openSignupBtn" class="btn btn-primary" type="button">Register</button>
       </div>
 
       <!-- After Login: Profile Dropdown Menu -->
       <div class="user-menu-wrapper" id="userMenu" style="display: none;">
-        <button class="menu-trigger-btn" id="profileMenuBtn">
+        <button class="menu-trigger-btn" id="profileMenuBtn" type="button">
           <div class="avatar-circle">
             <i class="fa fa-user"></i>
           </div>
@@ -65,9 +65,9 @@
 
   <!-- Navigation / Role Tabs -->
   <div class="sub-nav wrap">
-    <button class="tab-link active" data-tab="jobsTab"><i class="fa fa-briefcase"></i> Browse Jobs</button>
-    <button class="tab-link" id="employerTabBtn" data-tab="employerTab" style="display: none;"><i class="fa fa-plus-circle"></i> Post a Job</button>
-    <button class="tab-link" id="seekerTabBtn" data-tab="seekerTab" style="display: none;"><i class="fa fa-file-alt"></i> My Applications</button>
+    <button class="tab-link active" data-tab="jobsTab" type="button"><i class="fa fa-briefcase"></i> Browse Jobs</button>
+    <button class="tab-link" id="employerTabBtn" data-tab="employerTab" style="display: none;" type="button"><i class="fa fa-plus-circle"></i> Post a Job</button>
+    <button class="tab-link" id="seekerTabBtn" data-tab="seekerTab" style="display: none;" type="button"><i class="fa fa-file-alt"></i> My Applications</button>
   </div>
 
   <main>
@@ -108,12 +108,12 @@
 
       <!-- Category Filter Pills -->
       <div class="wrap category-bar">
-        <button class="cat-pill active" data-cat="all">All Jobs</button>
-        <button class="cat-pill" data-cat="IT & Software">IT & Software</button>
-        <button class="cat-pill" data-cat="Healthcare">Healthcare</button>
-        <button class="cat-pill" data-cat="Engineering">Engineering</button>
-        <button class="cat-pill" data-cat="Sales & Marketing">Sales & Marketing</button>
-        <button class="cat-pill" data-cat="Finance & Accounts">Finance & Accounts</button>
+        <button class="cat-pill active" data-cat="all" type="button">All Jobs</button>
+        <button class="cat-pill" data-cat="IT & Software" type="button">IT & Software</button>
+        <button class="cat-pill" data-cat="Healthcare" type="button">Healthcare</button>
+        <button class="cat-pill" data-cat="Engineering" type="button">Engineering</button>
+        <button class="cat-pill" data-cat="Sales & Marketing" type="button">Sales & Marketing</button>
+        <button class="cat-pill" data-cat="Finance & Accounts" type="button">Finance & Accounts</button>
       </div>
 
       <!-- Job Listings -->
@@ -192,7 +192,7 @@
     </section>
   </main>
 
-  <!-- Complete Profile Details Modal -->
+  <!-- Profile Details Modal -->
   <div id="profileModal" class="modal">
     <div class="modal-content modal-large">
       <span class="close-modal" id="closeProfileModal">&times;</span>
@@ -200,7 +200,7 @@
       <p class="form-sub">Apni mukammal details save karein taake jobs ke liye apply karna aasan ho jaye.</p>
 
       <form id="profileForm">
-        <!-- 1. Personal Details -->
+        <!-- Personal Details -->
         <div class="profile-section-block">
           <h4><i class="fa fa-id-card"></i> Personal Information</h4>
           <div class="form-grid">
@@ -227,7 +227,7 @@
           </div>
         </div>
 
-        <!-- 2. Education Details -->
+        <!-- Education Details -->
         <div class="profile-section-block">
           <h4><i class="fa fa-graduation-cap"></i> Education</h4>
           <div class="form-grid">
@@ -250,7 +250,7 @@
           </div>
         </div>
 
-        <!-- 3. Experience Details -->
+        <!-- Experience Details -->
         <div class="profile-section-block">
           <h4><i class="fa fa-briefcase"></i> Work Experience</h4>
           <div class="form-grid">
@@ -269,7 +269,7 @@
           </div>
         </div>
 
-        <!-- 4. Skills, Certificates & Resume -->
+        <!-- Skills & Certificates -->
         <div class="profile-section-block">
           <h4><i class="fa fa-certificate"></i> Skills, Certificates & CV Link</h4>
           <div class="form-grid">
@@ -297,6 +297,8 @@
   <div id="authModal" class="modal">
     <div class="modal-content">
       <span class="close-modal" id="closeAuthModal">&times;</span>
+      
+      <!-- Login Form -->
       <div id="loginFormContainer">
         <h3>Login to JobConnect</h3>
         <p class="form-sub">Access your account and opportunities</p>
@@ -314,6 +316,7 @@
         </form>
       </div>
 
+      <!-- Signup Form -->
       <div id="signupFormContainer" style="display: none;">
         <h3>Create an Account</h3>
         <p class="form-sub">Join as a Job Seeker or Employer</p>
@@ -359,11 +362,13 @@
     </div>
   </footer>
 
-  <!-- Firebase Scripts -->
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-  <script src="script.js?v=4"></script>
+  
+  <!-- Main Logic with Cache-Buster -->
+  <script src="script.js?v=5"></script>
 </body>
-  </html>
+      </html>
                 
