@@ -83,33 +83,39 @@ window.addEventListener("click", (e) => {
   if (e.target === applyModal) applyModal.style.display = "none";
 });
 
-// Profile Modal Open & Populate
+// Profile Modal Open & Populate (Fixed to open directly)
 if (menuProfileBtn) {
   menuProfileBtn.addEventListener("click", (e) => {
     e.preventDefault();
-    profileDropdown.classList.remove("show");
-    if (!currentUser || !currentUserProfile) return;
+    if (profileDropdown) profileDropdown.classList.remove("show");
 
-    document.getElementById("profName").value = currentUserProfile.name || "";
-    document.getElementById("profEmail").value = currentUser.email || "";
-    document.getElementById("profPhone").value = currentUserProfile.phone || "";
-    document.getElementById("profLocation").value = currentUserProfile.location || "";
-    document.getElementById("profBio").value = currentUserProfile.bio || "";
+    if (!currentUser) {
+      alert("براہ کرم پہلے لاگ ان کریں۔");
+      return;
+    }
 
-    document.getElementById("profDegree").value = currentUserProfile.degree || "";
-    document.getElementById("profInstitute").value = currentUserProfile.institute || "";
-    document.getElementById("profGradYear").value = currentUserProfile.gradYear || "";
-    document.getElementById("profGrade").value = currentUserProfile.grade || "";
-
-    document.getElementById("profTotalExp").value = currentUserProfile.totalExp || "";
-    document.getElementById("profLastRole").value = currentUserProfile.lastRole || "";
-    document.getElementById("profLastCompany").value = currentUserProfile.lastCompany || "";
-
-    document.getElementById("profSkills").value = currentUserProfile.skills || "";
-    document.getElementById("profCerts").value = currentUserProfile.certs || "";
-    document.getElementById("profCvLink").value = currentUserProfile.cvLink || "";
-
+    // Modal کھولیں
     profileModal.style.display = "flex";
+
+    // ڈیٹا فل کریں
+    document.getElementById("profEmail").value = currentUser.email || "";
+    document.getElementById("profName").value = currentUserProfile?.name || "";
+    document.getElementById("profPhone").value = currentUserProfile?.phone || "";
+    document.getElementById("profLocation").value = currentUserProfile?.location || "";
+    document.getElementById("profBio").value = currentUserProfile?.bio || "";
+
+    document.getElementById("profDegree").value = currentUserProfile?.degree || "";
+    document.getElementById("profInstitute").value = currentUserProfile?.institute || "";
+    document.getElementById("profGradYear").value = currentUserProfile?.gradYear || "";
+    document.getElementById("profGrade").value = currentUserProfile?.grade || "";
+
+    document.getElementById("profTotalExp").value = currentUserProfile?.totalExp || "";
+    document.getElementById("profLastRole").value = currentUserProfile?.lastRole || "";
+    document.getElementById("profLastCompany").value = currentUserProfile?.lastCompany || "";
+
+    document.getElementById("profSkills").value = currentUserProfile?.skills || "";
+    document.getElementById("profCerts").value = currentUserProfile?.certs || "";
+    document.getElementById("profCvLink").value = currentUserProfile?.cvLink || "";
   });
 }
 
@@ -546,7 +552,4 @@ function applyFilters() {
   const country = document.getElementById("countryFilter").value;
   const activeCat = document.querySelector(".cat-pill.active")?.getAttribute("data-cat") || "all";
 
-  const filtered = allJobs.filter(job => {
-    const matchesKeyword = !query || 
-      job.title.toLowerCase().includes(query) || 
-      job.company.toLowerCase(
+  const filtered = allJobs
