@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JobConnect - International Jobs Portal</title>
-  <link rel="stylesheet" href="styles.css?v=50">
+  <link rel="stylesheet" href="styles.css?v=250">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -12,20 +12,20 @@
   <!-- Header -->
   <header class="header">
     <div class="wrap nav">
-      <a class="brand" href="#">
+      <a class="brand" href="#" onclick="switchTab('jobsTab'); return false;">
         <span class="logo">JC</span>
         <span>JobConnect <b>Global</b></span>
       </a>
 
       <!-- Before Login: Buttons -->
       <div class="nav-actions" id="authActions">
-        <button id="openLoginBtn" class="btn btn-outline" type="button">Login</button>
-        <button id="openSignupBtn" class="btn btn-primary" type="button">Register</button>
+        <button id="openLoginBtn" class="btn btn-outline" type="button" onclick="openLoginModal()">Login</button>
+        <button id="openSignupBtn" class="btn btn-primary" type="button" onclick="openSignupModal()">Register</button>
       </div>
 
       <!-- After Login: Profile Dropdown Menu -->
       <div class="user-menu-wrapper" id="userMenu" style="display: none;">
-        <button class="menu-trigger-btn" id="profileMenuBtn" type="button">
+        <button class="menu-trigger-btn" id="profileMenuBtn" type="button" onclick="toggleUserDropdown(event)">
           <div class="avatar-circle">
             <i class="fa fa-user"></i>
           </div>
@@ -42,19 +42,19 @@
           <hr>
           <ul class="dropdown-links">
             <li>
-              <a href="#" id="menuProfileBtn"><i class="fa fa-user-circle"></i> Profile Details</a>
+              <a href="#" id="menuProfileBtn" onclick="openProfileModal(); return false;"><i class="fa fa-user-circle"></i> Profile Details</a>
             </li>
             <li id="menuEmployerItem" style="display: none;">
-              <a href="#" id="menuPostJobBtn"><i class="fa fa-plus-circle"></i> Post New Job</a>
+              <a href="#" id="menuPostJobBtn" onclick="switchTab('employerTab'); closeDropdown(); return false;"><i class="fa fa-plus-circle"></i> Post New Job</a>
             </li>
             <li id="menuSeekerItem" style="display: none;">
-              <a href="#" id="menuApplicationsBtn"><i class="fa fa-file-alt"></i> My Applications</a>
+              <a href="#" id="menuApplicationsBtn" onclick="switchTab('seekerTab'); closeDropdown(); return false;"><i class="fa fa-file-alt"></i> My Applications</a>
             </li>
             <li>
-              <a href="#" id="menuChangePassBtn"><i class="fa fa-key"></i> Reset Password</a>
+              <a href="#" id="menuChangePassBtn" onclick="handlePasswordReset(); return false;"><i class="fa fa-key"></i> Reset Password</a>
             </li>
             <li class="logout-item">
-              <a href="#" id="logoutBtn"><i class="fa fa-sign-out-alt"></i> Logout</a>
+              <a href="#" id="logoutBtn" onclick="handleLogout(); return false;"><i class="fa fa-sign-out-alt"></i> Logout</a>
             </li>
           </ul>
         </div>
@@ -64,9 +64,9 @@
 
   <!-- Navigation Tabs -->
   <div class="sub-nav wrap">
-    <button class="tab-link active" data-tab="jobsTab" type="button"><i class="fa fa-briefcase"></i> Browse Jobs</button>
-    <button class="tab-link" id="employerTabBtn" data-tab="employerTab" style="display: none;" type="button"><i class="fa fa-plus-circle"></i> Post a Job</button>
-    <button class="tab-link" id="seekerTabBtn" data-tab="seekerTab" style="display: none;" type="button"><i class="fa fa-file-alt"></i> My Applications</button>
+    <button class="tab-link active" id="tabBtnJobs" data-tab="jobsTab" type="button" onclick="switchTab('jobsTab')"><i class="fa fa-briefcase"></i> Browse Jobs</button>
+    <button class="tab-link" id="employerTabBtn" data-tab="employerTab" style="display: none;" type="button" onclick="switchTab('employerTab')"><i class="fa fa-plus-circle"></i> Post a Job</button>
+    <button class="tab-link" id="seekerTabBtn" data-tab="seekerTab" style="display: none;" type="button" onclick="switchTab('seekerTab')"><i class="fa fa-file-alt"></i> My Applications</button>
   </div>
 
   <main>
@@ -79,7 +79,7 @@
             <h1>Find Verified International & Remote Jobs</h1>
             <p>Explore opportunities across Pakistan, UAE, Saudi Arabia, Qatar, UK, USA, Canada, and Remote.</p>
 
-            <form id="searchForm" class="search-box">
+            <form id="searchForm" class="search-box" onsubmit="handleSearch(event)">
               <div class="input-group">
                 <i class="fa fa-search"></i>
                 <input type="text" id="keyword" placeholder="Job title, skill, or keyword...">
@@ -107,12 +107,12 @@
 
       <!-- Category Pills -->
       <div class="wrap category-bar">
-        <button class="cat-pill active" data-cat="all" type="button">All Jobs</button>
-        <button class="cat-pill" data-cat="IT & Software" type="button">IT & Software</button>
-        <button class="cat-pill" data-cat="Healthcare" type="button">Healthcare</button>
-        <button class="cat-pill" data-cat="Engineering" type="button">Engineering</button>
-        <button class="cat-pill" data-cat="Sales & Marketing" type="button">Sales & Marketing</button>
-        <button class="cat-pill" data-cat="Finance & Accounts" type="button">Finance & Accounts</button>
+        <button class="cat-pill active" data-cat="all" type="button" onclick="setCategoryFilter('all', this)">All Jobs</button>
+        <button class="cat-pill" data-cat="IT & Software" type="button" onclick="setCategoryFilter('IT & Software', this)">IT & Software</button>
+        <button class="cat-pill" data-cat="Healthcare" type="button" onclick="setCategoryFilter('Healthcare', this)">Healthcare</button>
+        <button class="cat-pill" data-cat="Engineering" type="button" onclick="setCategoryFilter('Engineering', this)">Engineering</button>
+        <button class="cat-pill" data-cat="Sales & Marketing" type="button" onclick="setCategoryFilter('Sales & Marketing', this)">Sales & Marketing</button>
+        <button class="cat-pill" data-cat="Finance & Accounts" type="button" onclick="setCategoryFilter('Finance & Accounts', this)">Finance & Accounts</button>
       </div>
 
       <!-- Job Listings -->
@@ -129,7 +129,7 @@
     <section id="employerTab" class="tab-content wrap">
       <div class="dashboard-card">
         <h2>Post a New Job Opportunity</h2>
-        <form id="postJobForm" class="form-grid">
+        <form id="postJobForm" class="form-grid" onsubmit="handlePostJob(event)">
           <div class="form-group">
             <label>Job Title</label>
             <input type="text" id="jobTitle" required placeholder="e.g. Computer Operator">
@@ -194,11 +194,11 @@
   <!-- Profile Details Modal -->
   <div id="profileModal" class="modal">
     <div class="modal-content modal-large">
-      <span class="close-modal" id="closeProfileModal">&times;</span>
+      <span class="close-modal" id="closeProfileModal" onclick="closeModal('profileModal')">&times;</span>
       <h3>Profile & Career Details</h3>
       <p class="form-sub">Apni details save karein taake jobs ke liye apply karna aasan ho jaye.</p>
 
-      <form id="profileForm">
+      <form id="profileForm" onsubmit="handleSaveProfile(event)">
         <div class="profile-section-block">
           <h4><i class="fa fa-id-card"></i> Personal Information</h4>
           <div class="form-grid">
@@ -291,12 +291,12 @@
   <!-- Auth Modal -->
   <div id="authModal" class="modal">
     <div class="modal-content">
-      <span class="close-modal" id="closeAuthModal">&times;</span>
+      <span class="close-modal" id="closeAuthModal" onclick="closeModal('authModal')">&times;</span>
       
       <div id="loginFormContainer">
         <h3>Login to JobConnect</h3>
         <p class="form-sub">Access your account</p>
-        <form id="loginForm">
+        <form id="loginForm" onsubmit="handleLogin(event)">
           <div class="form-group">
             <label>Email Address</label>
             <input type="email" id="loginEmail" required placeholder="you@example.com">
@@ -306,14 +306,14 @@
             <input type="password" id="loginPassword" required placeholder="••••••••">
           </div>
           <button type="submit" class="btn btn-primary full-width">Login</button>
-          <p class="switch-form">Don't have an account? <a href="#" id="showSignup">Register here</a></p>
+          <p class="switch-form">Don't have an account? <a href="#" id="showSignup" onclick="showSignupSection(); return false;">Register here</a></p>
         </form>
       </div>
 
       <div id="signupFormContainer" style="display: none;">
         <h3>Create an Account</h3>
         <p class="form-sub">Join as a Job Seeker or Employer</p>
-        <form id="signupForm">
+        <form id="signupForm" onsubmit="handleSignup(event)">
           <div class="form-group">
             <label>Full Name or Company Name</label>
             <input type="text" id="signupName" required placeholder="John Doe or Acme Inc.">
@@ -334,7 +334,7 @@
             <input type="password" id="signupPassword" minlength="6" required placeholder="••••••••">
           </div>
           <button type="submit" class="btn btn-primary full-width">Create Account</button>
-          <p class="switch-form">Already registered? <a href="#" id="showLogin">Login here</a></p>
+          <p class="switch-form">Already registered? <a href="#" id="showLogin" onclick="showLoginSection(); return false;">Login here</a></p>
         </form>
       </div>
     </div>
@@ -343,7 +343,7 @@
   <!-- Job Details Modal -->
   <div id="applyModal" class="modal">
     <div class="modal-content">
-      <span class="close-modal" id="closeApplyModal">&times;</span>
+      <span class="close-modal" id="closeApplyModal" onclick="closeModal('applyModal')">&times;</span>
       <div id="applyModalBody"></div>
     </div>
   </div>
@@ -355,110 +355,98 @@
     </div>
   </footer>
 
-  <!-- Firebase CDN -->
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
   <!-- Complete Inlined Safe Engine -->
   <script>
-    (function() {
-      const firebaseConfig = {
-        apiKey: "AIzaSyDYMzWCT9K3ZkephaCaLyiegAgo3Mwiz_4",
-        authDomain: "jobconnect-pakistan.firebaseapp.com",
-        projectId: "jobconnect-pakistan",
-        storageBucket: "jobconnect-pakistan.firebasestorage.app",
-        messagingSenderId: "939137633662",
-        appId: "1:939137633662:web:a52f45ee3938b7e846f72f"
-      };
+    const firebaseConfig = {
+      apiKey: "AIzaSyDYMzWCT9K3ZkephaCaLyiegAgo3Mwiz_4",
+      authDomain: "jobconnect-pakistan.firebaseapp.com",
+      projectId: "jobconnect-pakistan",
+      storageBucket: "jobconnect-pakistan.firebasestorage.app",
+      messagingSenderId: "939137633662",
+      appId: "1:939137633662:web:a52f45ee3938b7e846f72f"
+    };
 
-      if (!firebase.apps.length) {
-        firebase.initializeApp(firebaseConfig);
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    let currentUser = null;
+    let currentUserProfile = null;
+    let allJobs = [];
+    let currentCategory = 'all';
+
+    const get = (id) => document.getElementById(id);
+
+    // Modal Display Functions
+    function openLoginModal() {
+      if (get('loginFormContainer')) get('loginFormContainer').style.display = 'block';
+      if (get('signupFormContainer')) get('signupFormContainer').style.display = 'none';
+      if (get('authModal')) get('authModal').style.display = 'flex';
+    }
+
+    function openSignupModal() {
+      if (get('loginFormContainer')) get('loginFormContainer').style.display = 'none';
+      if (get('signupFormContainer')) get('signupFormContainer').style.display = 'block';
+      if (get('authModal')) get('authModal').style.display = 'flex';
+    }
+
+    function showSignupSection() {
+      if (get('loginFormContainer')) get('loginFormContainer').style.display = 'none';
+      if (get('signupFormContainer')) get('signupFormContainer').style.display = 'block';
+    }
+
+    function showLoginSection() {
+      if (get('signupFormContainer')) get('signupFormContainer').style.display = 'none';
+      if (get('loginFormContainer')) get('loginFormContainer').style.display = 'block';
+    }
+
+    function closeModal(id) {
+      const el = get(id);
+      if (el) el.style.display = 'none';
+    }
+
+    function toggleUserDropdown(e) {
+      if (e) e.stopPropagation();
+      const dd = get('profileDropdown');
+      if (dd) dd.classList.toggle('show');
+    }
+
+    function closeDropdown() {
+      const dd = get('profileDropdown');
+      if (dd) dd.classList.remove('show');
+    }
+
+    window.onclick = function(e) {
+      const dd = get('profileDropdown');
+      const btn = get('profileMenuBtn');
+      if (dd && !dd.contains(e.target) && (!btn || !btn.contains(e.target))) {
+        dd.classList.remove('show');
       }
-      const auth = firebase.auth();
-      const db = firebase.firestore();
+      ['authModal', 'profileModal', 'applyModal'].forEach(id => {
+        const m = get(id);
+        if (m && e.target === m) m.style.display = 'none';
+      });
+    };
 
-      let currentUser = null;
-      let currentUserProfile = null;
-      let allJobs = [];
+    // Navigation Tabs
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-link').forEach(el => el.classList.remove('active'));
 
-      const get = (id) => document.getElementById(id);
+      const target = get(tabId);
+      if (target) target.classList.add('active');
 
-      window.addEventListener("DOMContentLoaded", () => {
-        // Modal Handlers
-        const authModal = get("authModal");
-        const profileModal = get("profileModal");
-        const applyModal = get("applyModal");
+      const btn = document.querySelector(`[data-tab="${tabId}"]`);
+      if (btn) btn.classList.add('active');
+    }
 
-        if (get("openLoginBtn")) {
-          get("openLoginBtn").onclick = () => {
-            get("loginFormContainer").style.display = "block";
-            get("signupFormContainer").style.display = "none";
-            authModal.style.display = "flex";
-          };
-        }
-
-        if (get("openSignupBtn")) {
-          get("openSignupBtn").onclick = () => {
-            get("loginFormContainer").style.display = "none";
-            get("signupFormContainer").style.display = "block";
-            authModal.style.display = "flex";
-          };
-        }
-
-        if (get("closeAuthModal")) get("closeAuthModal").onclick = () => authModal.style.display = "none";
-        if (get("closeProfileModal")) get("closeProfileModal").onclick = () => profileModal.style.display = "none";
-        if (get("closeApplyModal")) get("closeApplyModal").onclick = () => applyModal.style.display = "none";
-
-        if (get("showSignup")) {
-          get("showSignup").onclick = (e) => {
-            e.preventDefault();
-            get("loginFormContainer").style.display = "none";
-            get("signupFormContainer").style.display = "block";
-          };
-        }
-
-        if (get("showLogin")) {
-          get("showLogin").onclick = (e) => {
-            e.preventDefault();
-            get("signupFormContainer").style.display = "none";
-            get("loginFormContainer").style.display = "block";
-          };
-        }
-
-        // Dropdown toggle
-        const profileMenuBtn = get("profileMenuBtn");
-        const profileDropdown = get("profileDropdown");
-        if (profileMenuBtn && profileDropdown) {
-          profileMenuBtn.onclick = (e) => {
-            e.stopPropagation();
-            profileDropdown.classList.toggle("show");
-          };
-        }
-
-        window.onclick = (e) => {
-          if (profileDropdown && !profileDropdown.contains(e.target) && e.target !== profileMenuBtn) {
-            profileDropdown.classList.remove("show");
-          }
-          if (e.target === authModal) authModal.style.display = "none";
-          if (e.target === profileModal) profileModal.style.display = "none";
-          if (e.target === applyModal) applyModal.style.display = "none";
-        };
-
-        // Profile Details Click
-        if (get("menuProfileBtn")) {
-          get("menuProfileBtn").onclick = (e) => {
-            e.preventDefault();
-            if (profileDropdown) profileDropdown.classList.remove("show");
-            if (!currentUser) return;
-
-            profileModal.style.display = "flex";
-            if (get("profEmail")) get("profEmail").value = currentUser.email || "";
-            if (get("profName")) get("profName").value = currentUserProfile?.name || "";
-            if (get("profPhone")) get("profPhone").value = currentUserProfile?.phone || "";
-            if (get("profLocation")) get("profLocation").value = currentUserProfile?.location || "";
-            if (get("profBio")) get("profBio").value = currentUserProfile?.bio || "";
-            if (get("profDegree")) get("profDegree").value = currentUserProfile?.degree || "";
-            if (get("profInstitute")) get("profInstitute").value = currentUserProfile?.institute || "";
-            if (get("profGradYear")) get("profGradYear").value = currentUserProfile?.gradYear || "";
+    // Profile Modal
+    function openProfileModal() {
       
