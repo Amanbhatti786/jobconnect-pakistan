@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>JobConnect - International Jobs Portal</title>
-  <link rel="stylesheet" href="styles.css?v=20">
+  <link rel="stylesheet" href="styles.css?v=50">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -33,7 +33,6 @@
           <i class="fa fa-chevron-down arrow-icon"></i>
         </button>
 
-        <!-- Dropdown Box -->
         <div class="dropdown-menu" id="profileDropdown">
           <div class="dropdown-header">
             <p class="dropdown-name" id="menuFullName">User Name</p>
@@ -63,7 +62,7 @@
     </div>
   </header>
 
-  <!-- Navigation / Role Tabs -->
+  <!-- Navigation Tabs -->
   <div class="sub-nav wrap">
     <button class="tab-link active" data-tab="jobsTab" type="button"><i class="fa fa-briefcase"></i> Browse Jobs</button>
     <button class="tab-link" id="employerTabBtn" data-tab="employerTab" style="display: none;" type="button"><i class="fa fa-plus-circle"></i> Post a Job</button>
@@ -106,7 +105,7 @@
         </div>
       </section>
 
-      <!-- Category Filter Pills -->
+      <!-- Category Pills -->
       <div class="wrap category-bar">
         <button class="cat-pill active" data-cat="all" type="button">All Jobs</button>
         <button class="cat-pill" data-cat="IT & Software" type="button">IT & Software</button>
@@ -120,13 +119,13 @@
       <section class="wrap job-listings-section">
         <div class="section-title">
           <h2>Latest Available Opportunities</h2>
-          <span id="jobsCountBadge" class="count-badge">Loading jobs...</span>
+          <span id="jobsCountBadge" class="count-badge">Loading...</span>
         </div>
         <div id="jobsList" class="jobs-grid"></div>
       </section>
     </section>
 
-    <!-- Tab 2: Employer Dashboard (Post Job) -->
+    <!-- Tab 2: Employer Dashboard -->
     <section id="employerTab" class="tab-content wrap">
       <div class="dashboard-card">
         <h2>Post a New Job Opportunity</h2>
@@ -181,7 +180,7 @@
       </div>
     </section>
 
-    <!-- Tab 3: Job Seeker Applications -->
+    <!-- Tab 3: Applications -->
     <section id="seekerTab" class="tab-content wrap">
       <div class="dashboard-card">
         <h2>My Submitted Applications</h2>
@@ -356,14 +355,14 @@
     </div>
   </footer>
 
-  <!-- Firebase SDKs -->
+  <!-- Firebase CDN -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
-  <!-- Embedded Core Logic -->
+  <!-- Complete Inlined Safe Engine -->
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    (function() {
       const firebaseConfig = {
         apiKey: "AIzaSyDYMzWCT9K3ZkephaCaLyiegAgo3Mwiz_4",
         authDomain: "jobconnect-pakistan.firebaseapp.com",
@@ -385,80 +384,81 @@
 
       const get = (id) => document.getElementById(id);
 
-      const authModal = get("authModal");
-      const profileModal = get("profileModal");
-      const applyModal = get("applyModal");
+      window.addEventListener("DOMContentLoaded", () => {
+        // Modal Handlers
+        const authModal = get("authModal");
+        const profileModal = get("profileModal");
+        const applyModal = get("applyModal");
 
-      // Auth Buttons Click
-      if (get("openLoginBtn")) {
-        get("openLoginBtn").onclick = () => {
-          get("loginFormContainer").style.display = "block";
-          get("signupFormContainer").style.display = "none";
-          authModal.style.display = "flex";
-        };
-      }
-
-      if (get("openSignupBtn")) {
-        get("openSignupBtn").onclick = () => {
-          get("loginFormContainer").style.display = "none";
-          get("signupFormContainer").style.display = "block";
-          authModal.style.display = "flex";
-        };
-      }
-
-      if (get("closeAuthModal")) get("closeAuthModal").onclick = () => authModal.style.display = "none";
-      if (get("closeProfileModal")) get("closeProfileModal").onclick = () => profileModal.style.display = "none";
-      if (get("closeApplyModal")) get("closeApplyModal").onclick = () => applyModal.style.display = "none";
-
-      if (get("showSignup")) {
-        get("showSignup").onclick = (e) => {
-          e.preventDefault();
-          get("loginFormContainer").style.display = "none";
-          get("signupFormContainer").style.display = "block";
-        };
-      }
-
-      if (get("showLogin")) {
-        get("showLogin").onclick = (e) => {
-          e.preventDefault();
-          get("signupFormContainer").style.display = "none";
-          get("loginFormContainer").style.display = "block";
-        };
-      }
-
-      // Dropdown Toggle
-      const profileMenuBtn = get("profileMenuBtn");
-      const profileDropdown = get("profileDropdown");
-      if (profileMenuBtn && profileDropdown) {
-        profileMenuBtn.onclick = (e) => {
-          e.stopPropagation();
-          profileDropdown.classList.toggle("show");
-        };
-      }
-
-      window.onclick = (e) => {
-        if (profileDropdown && !profileDropdown.contains(e.target) && e.target !== profileMenuBtn) {
-          profileDropdown.classList.remove("show");
+        if (get("openLoginBtn")) {
+          get("openLoginBtn").onclick = () => {
+            get("loginFormContainer").style.display = "block";
+            get("signupFormContainer").style.display = "none";
+            authModal.style.display = "flex";
+          };
         }
-        if (e.target === authModal) authModal.style.display = "none";
-        if (e.target === profileModal) profileModal.style.display = "none";
-        if (e.target === applyModal) applyModal.style.display = "none";
-      };
 
-      // Open Profile Modal
-      if (get("menuProfileBtn")) {
-        get("menuProfileBtn").onclick = (e) => {
-          e.preventDefault();
-          if (profileDropdown) profileDropdown.classList.remove("show");
-          if (!currentUser) return;
+        if (get("openSignupBtn")) {
+          get("openSignupBtn").onclick = () => {
+            get("loginFormContainer").style.display = "none";
+            get("signupFormContainer").style.display = "block";
+            authModal.style.display = "flex";
+          };
+        }
 
-          profileModal.style.display = "flex";
-          if (get("profEmail")) get("profEmail").value = currentUser.email || "";
-          if (get("profName")) get("profName").value = currentUserProfile?.name || "";
-          if (get("profPhone")) get("profPhone").value = currentUserProfile?.phone || "";
-          if (get("profLocation")) get("profLocation").value = currentUserProfile?.location || "";
-          if (get("profBio")) get("profBio").value = currentUserProfile?.bio || "";
-          if (get("profDegree")) get("profDegree").value = currentUserProfile?.degree || "";
-          if (get("profInstitute")) get("profInstitute").value = currentUserProfile?.institute || "";
-          if (get("profGradYear")) get("profGradYear").value = currentUserProfile?.gradYear || "";
-          if (get("profGrade")) get("profGrade").value = currentUserProfile?.grade || ""
+        if (get("closeAuthModal")) get("closeAuthModal").onclick = () => authModal.style.display = "none";
+        if (get("closeProfileModal")) get("closeProfileModal").onclick = () => profileModal.style.display = "none";
+        if (get("closeApplyModal")) get("closeApplyModal").onclick = () => applyModal.style.display = "none";
+
+        if (get("showSignup")) {
+          get("showSignup").onclick = (e) => {
+            e.preventDefault();
+            get("loginFormContainer").style.display = "none";
+            get("signupFormContainer").style.display = "block";
+          };
+        }
+
+        if (get("showLogin")) {
+          get("showLogin").onclick = (e) => {
+            e.preventDefault();
+            get("signupFormContainer").style.display = "none";
+            get("loginFormContainer").style.display = "block";
+          };
+        }
+
+        // Dropdown toggle
+        const profileMenuBtn = get("profileMenuBtn");
+        const profileDropdown = get("profileDropdown");
+        if (profileMenuBtn && profileDropdown) {
+          profileMenuBtn.onclick = (e) => {
+            e.stopPropagation();
+            profileDropdown.classList.toggle("show");
+          };
+        }
+
+        window.onclick = (e) => {
+          if (profileDropdown && !profileDropdown.contains(e.target) && e.target !== profileMenuBtn) {
+            profileDropdown.classList.remove("show");
+          }
+          if (e.target === authModal) authModal.style.display = "none";
+          if (e.target === profileModal) profileModal.style.display = "none";
+          if (e.target === applyModal) applyModal.style.display = "none";
+        };
+
+        // Profile Details Click
+        if (get("menuProfileBtn")) {
+          get("menuProfileBtn").onclick = (e) => {
+            e.preventDefault();
+            if (profileDropdown) profileDropdown.classList.remove("show");
+            if (!currentUser) return;
+
+            profileModal.style.display = "flex";
+            if (get("profEmail")) get("profEmail").value = currentUser.email || "";
+            if (get("profName")) get("profName").value = currentUserProfile?.name || "";
+            if (get("profPhone")) get("profPhone").value = currentUserProfile?.phone || "";
+            if (get("profLocation")) get("profLocation").value = currentUserProfile?.location || "";
+            if (get("profBio")) get("profBio").value = currentUserProfile?.bio || "";
+            if (get("profDegree")) get("profDegree").value = currentUserProfile?.degree || "";
+            if (get("profInstitute")) get("profInstitute").value = currentUserProfile?.institute || "";
+            if (get("profGradYear")) get("profGradYear").value = currentUserProfile?.gradYear || "";
+      
