@@ -644,3 +644,16 @@ body {
   font-size: 0.85rem;
   color: var(--text-muted);
   }
+
+
+/* Fix Invisible Screen Overlay */
+.modal {
+  display: none !important;
+  pointer-events: none;
+}
+.modal[style*="display: flex"],
+.modal[style*="display: block"] {
+  display: flex !important;
+  pointer-events: auto;
+}
+
